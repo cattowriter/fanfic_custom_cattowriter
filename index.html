@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎁 Buddy Fic Interpretation System</title>
+    <title>🐴 Fic Interpretation System</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -36,7 +36,6 @@
         }
         
         .subtitle {
-            text-align: center;
             color: #888;
             margin-bottom: 30px;
             font-size: 1rem;
@@ -288,14 +287,40 @@
                 grid-template-columns: 1fr;
             }
         }
+        
+        /* Fic Card Hover Effect */
+        #ficPromoPage a:hover {
+            background: rgba(0, 217, 163, 0.2) !important;
+            border-color: #00d9a3 !important;
+            transform: translateY(-5px);
+        }
+        
+        @media (max-width: 768px) {
+            /* Mobile & Tablet: แสดง 1 คอลัมน์ */
+            #ficPromoPage > div > div[style*="grid"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            #ficPromoPage a img {
+                height: 150px !important;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .subtitle {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Intro Page -->
         <div id="introPage">
-            <h1>🎁 Buddy Fic Interpretation System</h1>
-            <p class="subtitle">ระบบตีความรสนิยมฟิคของคุณ (เฉพาะบัดดี้ของผม)</p>
+            <h1>🐴 Fic Interpretation System</h1>
+            <p class="subtitle">ระบบตีความรสนิยมฟิคของคุณ</p>
             
             <div class="disclaimer">
                 <p style="font-size: 1.2rem; margin-bottom: 15px;">กรุณาเลือกตามจริง</p>
@@ -304,7 +329,7 @@
                     ผลลัพธ์อาจแตกต่างจากที่คุณคิดเล็กน้อย
                 </p>
                 <p style="font-size: 0.85rem; color: #ff2e63; margin-top: 10px;">
-                    ⚠️ ระบบไม่รับประกันความไม่มีม้า
+                    ⚠️ ระบบไม่รับประกันความไม่มีม้า 🐴🦄 ⚠️
                 </p>
             </div>
             
@@ -384,7 +409,7 @@
                     ต่างประเทศ
                 </div>
                 <div class="option" onclick="selectOption('q2', 'squid', this)">
-                    Squid Game Theme
+                    Squid Game Theme 🦑
                 </div>
                 
                 <div class="button-group" style="margin-top: 30px;">
@@ -405,12 +430,6 @@
                 </div>
                 <div class="option" onclick="selectOption('q3', 'soft', this)">
                     หมาเด็ก ขี้อ้อน
-                </div>
-                <div class="option" onclick="selectOption('q3', 'trauma', this)">
-                    คนธรรมดาที่มีปม
-                </div>
-                <div class="option" onclick="selectOption('q3', 'chaotic', this)">
-                    มีตัวปั่นที่ไม่รู้ตัวว่าปั่น
                 </div>
                 
                 <div class="button-group" style="margin-top: 30px;">
@@ -447,7 +466,7 @@
                 <div class="question-number" style="color: #ff2e63;">5️⃣ สิ่งที่คุณไม่ต้องการในฟิค?</div>
                 <div class="question-text">สิ่งที่คุณไม่ต้องการในฟิค?</div>
                 <div class="option" onclick="selectOption('q5', 'irony_max', this)">
-                    ไม่มีม้าเลย
+                    ไม่มีม้าเลย ❌🐴
                 </div>
                 <div class="option" onclick="selectOption('q5', 'irony_high', this)">
                     ไม่อยากให้มีสัตว์
@@ -464,10 +483,7 @@
                 
                 <div class="button-group" style="margin-top: 30px;">
                     <button class="secondary-btn" onclick="prevStep(4)">← ย้อนกลับ</button>
-                    <button id="next5" onclick="submitQuiz()" disabled>
-                        <span id="submitText">🎯 ดูผลลัพธ์</span>
-                        <span id="submitLoading" class="hidden">⏳ กำลังวิเคราะห์...</span>
-                    </button>
+                    <button id="next5" onclick="submitQuiz()" disabled>🎯 ดูผลลัพธ์ 🎁</button>
                 </div>
             </div>
         </div>
@@ -496,51 +512,94 @@
             </div>
         </div>
         
-        <!-- Result Page -->
-        <div id="resultPage" class="hidden">
-            <h1>📊 ผลการคำนวณฟิคของคุณ</h1>
-            <p class="subtitle">จากการวิเคราะห์คำตอบของคุณ</p>
+        <!-- Answer Summary Page -->
+        <div id="answerSummaryPage" class="hidden">
+            <h1>📊 ผลการวิเคราะห์คำตอบของคุณ</h1>
+            <p class="subtitle">จากสิ่งที่คุณเลือก</p>
+            
+            <div class="result-container" style="padding: 20px;">
+                <!-- แสดงคำตอบทั้งหมด -->
+                <div class="result-section" style="margin-bottom: 12px; padding: 10px;">
+                    <div class="result-label" style="font-size: 0.9rem;">คุณต้องการ:</div>
+                    <div class="result-value" id="resultTone" style="font-size: 1rem;"></div>
+                    <div style="color: #888; font-size: 0.85rem; margin-top: 3px;" id="resultToneInterpret"></div>
+                </div>
+                
+                <div class="result-section" style="margin-bottom: 12px; padding: 10px;">
+                    <div class="result-label" style="font-size: 0.9rem;">ฉาก:</div>
+                    <div class="result-value" id="resultSetting" style="font-size: 1rem;"></div>
+                    <div style="color: #888; font-size: 0.85rem; margin-top: 3px;" id="resultSettingInterpret"></div>
+                </div>
+                
+                <div class="result-section" style="margin-bottom: 12px; padding: 10px;">
+                    <div class="result-label" style="font-size: 0.9rem;">คาแรคเตอร์:</div>
+                    <div class="result-value" id="resultCharacter" style="font-size: 1rem;"></div>
+                    <div style="color: #888; font-size: 0.85rem; margin-top: 3px;" id="resultCharacterInterpret"></div>
+                </div>
+                
+                <div class="result-section" style="margin-bottom: 12px; padding: 10px;">
+                    <div class="result-label" style="font-size: 0.9rem;">ตอนจบ:</div>
+                    <div class="result-value" id="resultEnding" style="font-size: 1rem;"></div>
+                    <div style="color: #888; font-size: 0.85rem; margin-top: 3px;" id="resultEndingInterpret"></div>
+                </div>
+                
+                <div class="result-section" style="margin-bottom: 12px; padding: 10px;">
+                    <div class="result-label" style="font-size: 0.9rem;">สิ่งที่ไม่ต้องการ:</div>
+                    <div class="result-value" id="resultUnwanted" style="font-size: 1rem;"></div>
+                    <div style="color: #888; font-size: 0.85rem; margin-top: 3px;" id="resultUnwantedInterpret"></div>
+                </div>
+            </div>
+            
+            <button onclick="showCharacterReveal()" style="margin-top: 20px;">
+                ดูตัวละครที่คุณได้รับ →
+            </button>
+        </div>
+        
+        <!-- Character Reveal Page (หน้าแยกพิเศษ) -->
+        <div id="characterRevealPage" class="hidden">
+            <h1>🐴🦄 คุณได้รับ</h1>
+            <p class="subtitle">ตัวละครที่เหมาะกับคุณ</p>
             
             <div class="result-container">
-                <div class="result-section">
-                    <div class="result-label">คุณต้องการ:</div>
-                    <div class="result-value" id="resultTone"></div>
-                    <div style="color: #888; font-size: 0.9rem; margin-top: 5px;" id="resultToneInterpret"></div>
+                <div style="background: linear-gradient(135deg, rgba(255, 46, 99, 0.2), rgba(14, 182, 227, 0.2)); 
+                            border: 3px solid #00d9a3; border-radius: 20px; padding: 50px 30px; 
+                            text-align: center;">
+                    
+                    <!-- Character Image (รูปกลม) -->
+                    <div style="margin-bottom: 30px;">
+                        <img id="characterImage" src="" alt="Character" 
+                             style="width: 200px; height: 200px; border-radius: 50%; 
+                                    object-fit: cover; border: 5px solid #00d9a3; 
+                                    box-shadow: 0 10px 30px rgba(0, 217, 163, 0.3);">
+                    </div>
+                    
+                    <!-- Character Text -->
+                    <h2 style="color: #00d9a3; margin-bottom: 20px; font-size: 1.5rem;">คุณได้รับ:</h2>
+                    <div id="characterRevealText" style="font-size: 1.3rem; line-height: 2; color: #fff; font-weight: 600;"></div>
                 </div>
-                
-                <div class="result-section">
-                    <div class="result-label">ฉาก:</div>
-                    <div class="result-value" id="resultSetting"></div>
-                    <div style="color: #888; font-size: 0.9rem; margin-top: 5px;" id="resultSettingInterpret"></div>
-                </div>
-                
-                <div class="result-section">
-                    <div class="result-label">คาแรคเตอร์:</div>
-                    <div class="result-value" id="resultCharacter"></div>
-                    <div style="color: #888; font-size: 0.9rem; margin-top: 5px;" id="resultCharacterInterpret"></div>
-                </div>
-                
-                <div class="result-section">
-                    <div class="result-label">ตอนจบ:</div>
-                    <div class="result-value" id="resultEnding"></div>
-                    <div style="color: #888; font-size: 0.9rem; margin-top: 5px;" id="resultEndingInterpret"></div>
-                </div>
-                
-                <div class="result-section">
-                    <div class="result-label">สิ่งที่ไม่ต้องการ:</div>
-                    <div class="result-value" id="resultUnwanted"></div>
-                    <div style="color: #888; font-size: 0.9rem; margin-top: 5px;" id="resultUnwantedInterpret"></div>
-                </div>
+            </div>
+            
+            <button onclick="showFullResults()" style="margin-top: 30px;">
+                ดูผลลัพธ์ฟิคของคุณ →
+            </button>
+        </div>
+        
+        <!-- Result Page (ผลลัพธ์ฟิคใหญ่) -->
+        <div id="resultPage" class="hidden">
+            <h1>📌 ผลลัพธ์ฟิคของคุณ</h1>
+            <p class="subtitle">จากการตีความคำตอบของคุณ</p>
+            
+            <div class="result-container">
                 
                 <div class="horse-reveal">
                     <h3 style="color: #ff2e63; margin-bottom: 15px;">📌 ผลลัพธ์ฟิคของคุณคือ:</h3>
                     <div id="finalStory" style="font-size: 1.1rem; line-height: 1.8;"></div>
-                    <div class="horse-emoji">🐎🐎🐎</div>
+                    <div class="horse-emoji">🐴🦄🐎</div>
                 </div>
                 
                 <div class="final-message">
                     <p>ระบบไม่ได้ใส่ม้าให้คุณ</p>
-                    <p style="margin-top: 10px;">ระบบแค่ <strong>"เข้าใจคุณดีเกินไป"</strong></p>
+                    <p style="margin-top: 10px;">ระบบแค่ <strong>"ตีความจากสิ่งลึกๆในใจที่คุณต้องการ"</strong></p>
                 </div>
             </div>
             
@@ -555,37 +614,37 @@
             <p class="subtitle">ช่วยบอกเราหน่อยนะ!</p>
             
             <div class="question-container">
-                <div class="question-text" style="font-size: 1.3rem; margin-bottom: 25px;">
+                <div class="question-text" style="font-size: 1.1rem; margin-bottom: 15px;">
                     คุณรู้สึกยังไงกับผลลัพธ์นี้?
                 </div>
                 
-                <div class="option" onclick="selectFeedback('accept', this)" style="border-color: rgba(0, 217, 163, 0.5);">
-                    <div style="font-size: 1.2rem; margin-bottom: 5px;">✅ อยากได้ฟิคนี้แหละ!</div>
-                    <div style="font-size: 0.9rem; color: #888;">ม้าก็ม้า ยอมรับเลย</div>
+                <div class="option" onclick="selectFeedback('accept', this)" style="border-color: rgba(0, 217, 163, 0.5); padding: 12px 18px; margin-bottom: 10px;">
+                    <div style="font-size: 1rem; margin-bottom: 3px;">✅ อยากได้ฟิคนี้แหละ!</div>
+                    <div style="font-size: 0.85rem; color: #888;">ม้าก็ม้า ยอมรับเลย ไอเลิฟม้า 🐴🦄</div>
                 </div>
                 
-                <div class="option" onclick="selectFeedback('reject', this)" style="border-color: rgba(255, 46, 99, 0.5);">
-                    <div style="font-size: 1.2rem; margin-bottom: 5px;">❌ ไม่ใช่ว้อย! ไม่เอาม้า</div>
-                    <div style="font-size: 0.9rem; color: #888;">อยากได้แบบอื่น (กรอกด้านล่าง)</div>
+                <div class="option" onclick="selectFeedback('reject', this)" style="border-color: rgba(255, 46, 99, 0.5); padding: 12px 18px; margin-bottom: 10px;">
+                    <div style="font-size: 1rem; margin-bottom: 3px;">❌ ไม่ใช่ว้อย! ไม่เอาม้า 👎🐴</div>
+                    <div style="font-size: 0.85rem; color: #888;">อยากได้แบบอื่น (กรอกด้านล่าง)</div>
                 </div>
                 
-                <div id="customFicInput" class="hidden" style="margin-top: 20px; animation: slideIn 0.3s;">
-                    <label style="display: block; color: #0eb6e3; margin-bottom: 10px; font-weight: 600;">
+                <div id="customFicInput" class="hidden" style="margin-top: 12px; animation: slideIn 0.3s;">
+                    <label style="display: block; color: #0eb6e3; margin-bottom: 8px; font-weight: 600; font-size: 0.95rem;">
                         อยากได้ฟิคแบบไหน? (แทนม้า)
                     </label>
-                    <textarea id="customFic" placeholder="เช่น: โรแมนติกในออฟฟิศ, คอมเมดี้วัยเรียน, ดราม่าอ่านแล้วร้องไห้..." 
-                              style="width: 100%; padding: 15px; font-size: 1rem; border-radius: 10px; 
+                    <textarea id="customFic" placeholder="เช่น: โรแมนติกในออฟฟิศ, คอมเมดี้วัยเรียน, ดราม่าอ่านแล้วร้องไห้แง ๆ..." 
+                              style="width: 100%; padding: 12px; font-size: 0.95rem; border-radius: 10px; 
                                      border: 2px solid rgba(255, 46, 99, 0.3); 
                                      background: rgba(255, 255, 255, 0.05); color: white; 
-                                     font-family: 'Kanit', sans-serif; min-height: 100px; resize: vertical;"></textarea>
-                    <p style="font-size: 0.85rem; color: #00d9a3; margin-top: 10px; text-align: center;">
-                        * พล็อตที่ส่งมา หากถูกเลือก จะเขียนไว้ใน In Other Words ตอนพิเศษ
+                                     font-family: 'Kanit', sans-serif; min-height: 70px; resize: vertical;"></textarea>
+                    <p style="font-size: 0.8rem; color: #00d9a3; margin-top: 8px; text-align: center;">
+                        * พล็อตที่ส่งมา หากถูกเลือก จะเขียนไว้ใน In Other Words ตอนพิเศษ และแชร์ใน x แต่ถ้าเกี่ยวกับม้า จะถูกเขียนใน เราไม่ใช่ม้าแข่ง 🐎 แทน *
                     </p>
                 </div>
                 
-                <p style="font-size: 0.9rem; color: #888; text-align: center; margin-top: 20px; line-height: 1.8;">
+                <p style="font-size: 0.85rem; color: #888; text-align: center; margin-top: 15px; line-height: 1.5;">
                     หากคุณเป็นบัดดี้ของผม จะได้รับฟิค custom นี้<br>
-                    หากไม่ใช่แต่โดนใจ ก็อาจจะลุ้นได้เลือกไปแต่งเช่นกัน
+                    หากไม่ใช่แต่โดนใจ ก็อาจจะลุ้นได้เลือกไปแต่งเช่นกัน แต่หากไม่ใช่ก็จะได้อ่านฟิคที่มีคน(โดนหลอกให้กด)มากที่สุด
                 </p>
             </div>
             
@@ -600,78 +659,90 @@
             <p class="subtitle">ถ้าใครยังไม่เคยอ่าน หรืออยากย้อนเก็บ</p>
             
             <div class="result-container" style="background: linear-gradient(135deg, rgba(14, 182, 227, 0.1), rgba(0, 217, 163, 0.1)); border: 2px solid #0eb6e3;">
-                <p style="text-align: center; font-size: 1.1rem; color: #fff; margin-bottom: 25px; line-height: 1.8;">
-                    ฝากกดเลิฟ 💗 เพิ่มเข้าชั้น 📌 เป็นกำลังใจให้นักเขียนด้วยนะคับ<br>
+                <p style="text-align: center; font-size: 0.95rem; color: #fff; margin-bottom: 15px; line-height: 1.5;">
+                    ฝากกดเลิฟ 💗 เพิ่มเข้าชั้น 📌 Comment เป็นกำลังใจให้นักเขียนด้วยนะคับ<br>
                     <strong style="color: #00d9a3;">Inhun | หนึ่งท้าย</strong>
                 </p>
                 
-                <!-- Fic Grid with Images -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 20px;">
+                <!-- Fic Grid with Images - 2 Columns -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
                     
                     <!-- รู้กันแค่นี้ -->
                     <a href="https://www.readawrite.com/a/5a4bba747a085a15251dfa9fd0efaf36" target="_blank" 
-                       style="text-decoration: none; display: block; background: rgba(0, 217, 163, 0.1); 
-                              border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 15px; 
+                       style="text-decoration: none; display: flex; flex-direction: column; background: rgba(0, 217, 163, 0.1); 
+                              border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 8px; 
                               transition: all 0.3s; color: #fff;">
                         <img src="images/rugun.jpg" alt="รู้กันแค่นี้" 
-                             style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
-                        <div style="font-size: 1.1rem; font-weight: 600; color: #00d9a3; margin-bottom: 5px;">รู้กันแค่นี้</div>
-                        <div style="font-size: 0.9rem; color: #bbb;">รอมคอม พี่เสืออินโฮ น้องกีฮุนวัยรุ่น แอบคบกันในที่ทำงาน</div>
+                             style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;">
+                        <div>
+                            <div style="font-size: 1rem; font-weight: 600; color: #00d9a3; margin-bottom: 4px;">รู้กันแค่นี้</div>
+                            <div style="font-size: 0.85rem; color: #bbb; line-height: 1.3;">รอมคอม พี่เสืออินโฮ น้องกีฮุนวัยรุ่น แอบคบกันในที่ทำงาน จะโป๊ะร้อยรอบแต่ก็ไม่ซะทีๆๆ</div>
+                        </div>
                     </a>
                     
                     <!-- เราไม่ใช่ม้าแข่ง -->
                     <a href="https://www.readawrite.com/a/afcd1595a7cc35ed2139a5b36c941f23" target="_blank" 
-                       style="text-decoration: none; display: block; background: rgba(0, 217, 163, 0.1); 
-                              border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 15px; 
+                       style="text-decoration: none; display: flex; flex-direction: column; background: rgba(0, 217, 163, 0.1); 
+                              border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 8px; 
                               transition: all 0.3s; color: #fff;">
                         <img src="images/horses.jpg" alt="เราไม่ใช่ม้าแข่ง" 
-                             style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
-                        <div style="font-size: 1.1rem; font-weight: 600; color: #00d9a3; margin-bottom: 5px;">เราไม่ใช่ม้าแข่ง | We Are Not Horses</div>
-                        <div style="font-size: 0.9rem; color: #bbb;">คอมเมดี้ กาว ถอดสมอง ฟิค AU ม้าแข่ง</div>
+                             style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;">
+                        <div>
+                            <div style="font-size: 1rem; font-weight: 600; color: #00d9a3; margin-bottom: 4px;">เราไม่ใช่ม้าแข่ง | We Are Not Horses</div>
+                            <div style="font-size: 0.85rem; color: #bbb; line-height: 1.3;">คอมเมดี้ กาว ถอดสมอง ฟิค AU ม้าแข่ง</div>
+                        </div>
                     </a>
                     
                     <!-- In Other Words -->
                     <a href="https://www.readawrite.com/a/5c79595144edc6c852d20c09d1a1748a" target="_blank" 
-                       style="text-decoration: none; display: block; background: rgba(0, 217, 163, 0.1); 
-                              border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 15px; 
+                       style="text-decoration: none; display: flex; flex-direction: column; background: rgba(0, 217, 163, 0.1); 
+                              border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 8px; 
                               transition: all 0.3s; color: #fff;">
                         <img src="images/inotherwords.jpg" alt="In Other Words" 
-                             style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
-                        <div style="font-size: 1.1rem; font-weight: 600; color: #00d9a3; margin-bottom: 5px;">In Other Words</div>
-                        <div style="font-size: 0.9rem; color: #bbb;">รวมฟิคหลายๆ รส ตอนสั้น เพิ่มเรื่อยๆ</div>
+                             style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;">
+                        <div>
+                            <div style="font-size: 1rem; font-weight: 600; color: #00d9a3; margin-bottom: 4px;">In Other Words</div>
+                            <div style="font-size: 0.85rem; color: #bbb; line-height: 1.3;">รวมฟิคหลายๆ รส ตอนสั้น เพิ่มเรื่อยๆ</div>
+                        </div>
                     </a>
                     
                     <!-- Redlight Means Go -->
                     <a href="https://www.readawrite.com/a/daee4ab905a4105e685c46a866ed6146" target="_blank" 
-                       style="text-decoration: none; display: block; background: rgba(0, 217, 163, 0.1); 
-                              border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 15px; 
+                       style="text-decoration: none; display: flex; flex-direction: column; background: rgba(0, 217, 163, 0.1); 
+                              border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 8px; 
                               transition: all 0.3s; color: #fff;">
                         <img src="images/redlight.jpg" alt="Redlight Means Go" 
-                             style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
-                        <div style="font-size: 1.1rem; font-weight: 600; color: #00d9a3; margin-bottom: 5px;">Redlight Means Go : เห็นคำเตือน…แต่เลือกเธอ</div>
-                        <div style="font-size: 0.9rem; color: #bbb;">ดราม่า-โรแมนติกเข้มข้น</div>
+                             style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;">
+                        <div>
+                            <div style="font-size: 1rem; font-weight: 600; color: #00d9a3; margin-bottom: 4px;">Redlight Means Go : เห็นคำเตือน…แต่เลือกเธอ</div>
+                            <div style="font-size: 0.85rem; color: #bbb; line-height: 1.3;">ดราม่า-โรแมนติกเข้มข้น ขมนิดๆ</div>
+                        </div>
                     </a>
                     
                     <!-- The Last Case -->
                     <a href="https://www.readawrite.com/a/99669d12694f873f8acef8b209e45af4" target="_blank" 
-                       style="text-decoration: none; display: block; background: rgba(0, 217, 163, 0.1); 
-                              border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 15px; 
+                       style="text-decoration: none; display: flex; flex-direction: column; background: rgba(0, 217, 163, 0.1); 
+                              border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 8px; 
                               transition: all 0.3s; color: #fff;">
                         <img src="images/lastcase.jpg" alt="The Last Case" 
-                             style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
-                        <div style="font-size: 1.1rem; font-weight: 600; color: #00d9a3; margin-bottom: 5px;">The Last Case</div>
-                        <div style="font-size: 0.9rem; color: #bbb;">ดราม่าสุดดาร์ก</div>
+                             style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;">
+                        <div>
+                            <div style="font-size: 1rem; font-weight: 600; color: #00d9a3; margin-bottom: 4px;">The Last Case</div>
+                            <div style="font-size: 0.85rem; color: #bbb; line-height: 1.3;">ดราม่าสุดดาร์ก ขมมาก ก็เลยดอง ถ้าโหวตเยอะจะมาต่อ 55</div>
+                        </div>
                     </a>
                     
                     <!-- Interview -->
                     <a href="https://www.readawrite.com/a/88fadc5b00343525a673319e21f8e6e4" target="_blank" 
-                       style="text-decoration: none; display: block; background: rgba(0, 217, 163, 0.1); 
-                              border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 15px; 
+                       style="text-decoration: none; display: flex; flex-direction: column; background: rgba(0, 217, 163, 0.1); 
+                              border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 8px; 
                               transition: all 0.3s; color: #fff;">
                         <img src="images/interview.jpg" alt="Interview" 
-                             style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
-                        <div style="font-size: 1.1rem; font-weight: 600; color: #00d9a3; margin-bottom: 5px;">[แปลสัมภาษณ์] LBH & LJJ</div>
-                        <div style="font-size: 0.9rem; color: #bbb;">สัมภาษณ์พิเศษ</div>
+                             style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;">
+                        <div>
+                            <div style="font-size: 1rem; font-weight: 600; color: #00d9a3; margin-bottom: 4px;">[แปลสัมภาษณ์] LBH & LJJ</div>
+                            <div style="font-size: 0.85rem; color: #bbb; line-height: 1.3;">สัมภาษณ์พิเศษ</div>
+                        </div>
                     </a>
                     
                 </div>
@@ -691,7 +762,7 @@
                 <div style="margin-bottom: 30px;">
                     <div style="font-size: 1.2rem; color: #ff2e63; margin-bottom: 10px; font-weight: 600;">1️⃣ ชอบฟิคเรื่องไหน มากที่สุด เพราะอะไร</div>
                     <div style="font-size: 0.95rem; color: #aaa; margin-bottom: 15px;">
-                        (ชอบพล็อต / โทน / คาแรคเตอร์ / โมเมนต์บางฉาก หรืออะไรก็ได้)
+                        (ชอบพล็อต / โทน / คาแรคเตอร์ / ม้า /โมเมนต์บางฉาก หรืออะไรก็ได้)
                     </div>
                     <select id="favoriteFicDropdown" 
                             style="width: 100%; padding: 15px; font-size: 1.05rem; border-radius: 10px; 
@@ -704,7 +775,7 @@
                         <option value="In Other Words">In Other Words</option>
                         <option value="Redlight Means Go">Redlight Means Go : เห็นคำเตือน…แต่เลือกเธอ</option>
                         <option value="The Last Case">The Last Case</option>
-                        <option value="ยังไม่ได้อ่านเลย">ยังไม่ได้อ่านเลยค้าบ มัวแต่ดูม้า</option>
+                        <option value="ยังไม่ได้อ่านเลย">ยังไม่ได้อ่านเลยค้าบ มัวแต่ดูม้า 🐴</option>
                     </select>
                     <textarea id="question1" placeholder="✍️ บอกเพิ่มเติมว่าชอบเพราะอะไร (เขียนได้ยาว ๆ เลย)" 
                               style="width: 100%; padding: 15px; font-size: 1rem; border-radius: 10px; 
@@ -716,7 +787,7 @@
                 <div style="margin-bottom: 30px;">
                     <div style="font-size: 1.2rem; color: #ff2e63; margin-bottom: 10px; font-weight: 600;">2️⃣ อยากให้เราแต่ง เรื่องไหนให้จบ มากที่สุด</div>
                     <div style="font-size: 0.95rem; color: #aaa; margin-bottom: 15px;">
-                        (หรืออยากเห็นเวอร์ชันต่อ / AU / ตอนพิเศษของเรื่องไหน)
+                        (อยากให้ไรท์แต่งให้จบซะทีขอร้อง หรือ อยากเห็นเวอร์ชันต่อ / AU / ตอนพิเศษของเรื่องไหน ถ้าไม่มีใส่ไม่มีได้จ้า)
                     </div>
                     <textarea id="question2" placeholder="✍️ กล่องคำตอบ (เขียนได้ยาว ๆ)" 
                               style="width: 100%; padding: 15px; font-size: 1rem; border-radius: 10px; 
@@ -726,16 +797,15 @@
                 </div>
                 
                 <div style="margin-bottom: 20px;">
-                    <div style="font-size: 1.2rem; color: #ff2e63; margin-bottom: 10px; font-weight: 600;">🧠 มีพล็อตอยาก "บริจาค" ไหม</div>
+                    <div style="font-size: 1.2rem; color: #ff2e63; margin-bottom: 10px; font-weight: 600;">🧠 มีพล็อตอยากให้แต่งไหม</div>
                     <div style="font-size: 0.95rem; color: #aaa; margin-bottom: 15px;">
-                        ถ้ามีพล็อต ไอเดีย ฉาก หรือแค่ประโยคเดียวที่อยากเห็นเป็นฟิค<br>
-                        <strong style="color: #00d9a3;">* พล็อตที่บริจาค หากถูกเลือก จะเขียนไว้ใน In Other Words ตอนพิเศษ</strong>
+                        ถ้ามีพล็อต ไอเดีย ฉาก หรือแค่ประโยคเดียวที่อยากเห็นเป็นฟิคใส่ไว้ได้<br>
+                        <strong style="color: #00d9a3;">* พล็อตที่แจก หากถูกเลือก จะเขียนไว้ใน In Other Words ตอนพิเศษ หรือ ถ้าเกี่ยวกับม้าจะใส่ใน เราไม่ใช่ม้าแข่ง 🐎 แทน ถ้าไม่มีใส่ ไม่มีได้จ้า*</strong>
                     </div>
-                    <textarea id="plotDonation" placeholder="✍️ กล่องบริจาคพล็อต (เขียนยาวได้เต็มที่)
+                    <textarea id="plotDonation" placeholder="✍️ กล่องรับพล็อต (เขียนยาวได้เต็มที่)
 – แนว / โทน
 – AU ที่อยากเห็น
-– จุดพัง / จุดหวาน / จุดเจ็บ
-– หรือแค่ 'อยากเห็นอินโฮทำแบบนี้กับกีฮุน'" 
+– หรือแค่ 'อยากเห็นม้าเยอะๆ' ก็ได้เช่นกัน..." 
                               style="width: 100%; padding: 15px; font-size: 1rem; border-radius: 10px; 
                                      border: 2px solid rgba(255, 46, 99, 0.3); 
                                      background: rgba(255, 255, 255, 0.05); color: white; 
@@ -751,17 +821,17 @@
         <!-- Message Page -->
         <div id="messagePage" class="hidden">
             <h1>💌 ฝากข้อความ</h1>
-            <p class="subtitle">มีอะไรอยากบอก cattowriter ไหม?</p>
+            <p class="subtitle">มีอะไรอยากบอก cattowriter🐱ไหม?</p>
             
             <div class="result-container">
-                <textarea id="messageToWriter" placeholder="เช่น: ชอบฟิคม้ามาก 555 / รอฟิคใหม่นะคะ / ขอบคุณที่สร้างฟิคดี ๆ..." 
+                <textarea id="messageToWriter" placeholder="เช่น: ชอบฟิคม้ามาก🐴🦄 /ชอบเรื่องอื่นด้วยๆๆ/ แต่งฟิคเก่าให้จบเถอะค่ะ... หรือ อื่นๆ" 
                           style="width: 100%; padding: 20px; font-size: 1.1rem; border-radius: 15px; 
                                  border: 2px solid rgba(14, 182, 227, 0.3); 
                                  background: rgba(255, 255, 255, 0.05); color: white; 
                                  font-family: 'Kanit', sans-serif; min-height: 200px; resize: vertical;"></textarea>
                 
                 <p style="font-size: 0.95rem; color: #888; text-align: center; margin-top: 20px; line-height: 1.8;">
-                    ไม่บังคับ แต่จะเป็นกำลังใจให้นักเขียนมากเลย!
+                    ไม่บังคับ แต่อยากอ่าน อิอิ!
                 </p>
             </div>
             
@@ -786,7 +856,7 @@
                     
                     <p style="font-size: 1.1rem; color: #ff2e63;">
                         <strong>หากไม่ใช่</strong><br>
-                        จะได้รับฟิคม้าที่คนโหวต (โดนหลอกให้กด) มากที่สุด 😈
+                        จะได้รับฟิคม้าที่คนโหวต (โดนหลอกให้กด) มากที่สุด 😈🐴
                     </p>
                 </div>
                 
@@ -803,9 +873,372 @@
                 </div>
             </div>
             
-            <button onclick="resetQuiz()" style="margin-top: 30px; background: linear-gradient(135deg, #00d9a3, #0eb6e3);">
+            <button onclick="showAllFicsAndVotePage()" style="margin-top: 30px; background: linear-gradient(135deg, #ff2e63, #ff5e4d);">
+                📖 อ่านฟิคทั้งหมด + โหวต
+            </button>
+            
+            <button onclick="restartQuiz()" style="margin-top: 15px; background: linear-gradient(135deg, #00d9a3, #0eb6e3);">
                 🔄 เล่นอีกครั้ง
             </button>
+        </div>
+        
+        <!-- All Fics Preview + Vote Page (รวมกัน) -->
+        <div id="allFicsPage" class="hidden">
+            <h1>📖 เฉลย + โหวตฟิคที่อยากได้หลังอ่านพล็อตกาว</h1>
+            <p class="subtitle">อ่านฟิคทั้งหมด แล้วเลือกโหวตเลย!</p>
+            
+            <div class="result-container">
+                <p style="text-align: center; color: #00d9a3; margin-bottom: 30px;">
+                    กดปุ่มด้านล่างเพื่ออ่านฟิคแต่ละแบบ ที่เลือกอะไรก็เป็นม้าๆๆๆ🐴
+                </p>
+                
+                <!-- Plot A Buttons -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #0eb6e3; margin-bottom: 15px;">🎓 วัยเรียน</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                        <button onclick="showFicModal('A1')" style="padding: 15px; font-size: 0.95rem;">โรแมนติก</button>
+                        <button onclick="showFicModal('A2')" style="padding: 15px; font-size: 0.95rem;">ดราม่า</button>
+                        <button onclick="showFicModal('A3')" style="padding: 15px; font-size: 0.95rem;">คอมเมดี้</button>
+                        <button onclick="showFicModal('A4')" style="padding: 15px; font-size: 0.95rem;">เรียล</button>
+                    </div>
+                </div>
+                
+                <!-- Plot B Buttons -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #0eb6e3; margin-bottom: 15px;">🧑‍💼 ออฟฟิศ</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                        <button onclick="showFicModal('B1')" style="padding: 15px; font-size: 0.95rem;">โรแมนติก</button>
+                        <button onclick="showFicModal('B2')" style="padding: 15px; font-size: 0.95rem;">ดราม่า</button>
+                        <button onclick="showFicModal('B3')" style="padding: 15px; font-size: 0.95rem;">คอมเมดี้</button>
+                        <button onclick="showFicModal('B4')" style="padding: 15px; font-size: 0.95rem;">เรียล</button>
+                    </div>
+                </div>
+                
+                <!-- Plot E Buttons -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #0eb6e3; margin-bottom: 15px;">✈️ ต่างประเทศ</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                        <button onclick="showFicModal('E1')" style="padding: 15px; font-size: 0.95rem;">โรแมนติก</button>
+                        <button onclick="showFicModal('E2')" style="padding: 15px; font-size: 0.95rem;">ดราม่า</button>
+                        <button onclick="showFicModal('E3')" style="padding: 15px; font-size: 0.95rem;">คอมเมดี้</button>
+                        <button onclick="showFicModal('E4')" style="padding: 15px; font-size: 0.95rem;">เรียล</button>
+                    </div>
+                </div>
+                
+                <!-- Plot S Buttons -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #0eb6e3; margin-bottom: 15px;">🦑 Squid Game</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                        <button onclick="showFicModal('S1')" style="padding: 15px; font-size: 0.95rem;">โรแมนติก</button>
+                        <button onclick="showFicModal('S2')" style="padding: 15px; font-size: 0.95rem;">ดราม่า</button>
+                        <button onclick="showFicModal('S3')" style="padding: 15px; font-size: 0.95rem;">คอมเมดี้</button>
+                        <button onclick="showFicModal('S4')" style="padding: 15px; font-size: 0.95rem;">เรียล</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ส่วนโหวต (ข้างนอก - แบบ Dropdown) -->
+            <div style="margin-top: 50px; padding-top: 30px; border-top: 3px solid rgba(14, 182, 227, 0.3);">
+                <h2 style="text-align: center; color: #ff2e63; margin-bottom: 20px;">🗳️ โหวตฟิคที่อยากให้เขียน</h2>
+                <p style="text-align: center; color: #00d9a3; margin-bottom: 30px; font-size: 1.05rem;">
+                    อ่านครบแล้วไหม? เลือกโหวตเลย!
+                </p>
+                
+                <div class="result-container">
+                    <select id="voteDropdown" onchange="selectVoteFromDropdown()" 
+                            style="width: 100%; padding: 15px; font-size: 1.05rem; border-radius: 10px; 
+                                   border: 2px solid rgba(14, 182, 227, 0.5); 
+                                   background: rgba(255, 255, 255, 0.05); color: white; 
+                                   font-family: 'Kanit', sans-serif; cursor: pointer; margin-bottom: 20px;">
+                        <option value="" style="background: #1a1a2e; color: white;">-- เลือกฟิคที่อยากให้เขียน --</option>
+                        <optgroup label="🎓 วัยเรียน" style="background: #1a1a2e; color: #0eb6e3;">
+                            <option value="A1" style="background: #1a1a2e; color: white;">โรแมนติก</option>
+                            <option value="A2" style="background: #1a1a2e; color: white;">ดราม่า</option>
+                            <option value="A3" style="background: #1a1a2e; color: white;">คอมเมดี้</option>
+                            <option value="A4" style="background: #1a1a2e; color: white;">เรียล</option>
+                        </optgroup>
+                        <optgroup label="🧑‍💼 ออฟฟิศ" style="background: #1a1a2e; color: #0eb6e3;">
+                            <option value="B1" style="background: #1a1a2e; color: white;">โรแมนติก</option>
+                            <option value="B2" style="background: #1a1a2e; color: white;">ดราม่า</option>
+                            <option value="B3" style="background: #1a1a2e; color: white;">คอมเมดี้</option>
+                            <option value="B4" style="background: #1a1a2e; color: white;">เรียล</option>
+                        </optgroup>
+                        <optgroup label="✈️ ต่างประเทศ" style="background: #1a1a2e; color: #0eb6e3;">
+                            <option value="E1" style="background: #1a1a2e; color: white;">โรแมนติก</option>
+                            <option value="E2" style="background: #1a1a2e; color: white;">ดราม่า</option>
+                            <option value="E3" style="background: #1a1a2e; color: white;">คอมเมดี้</option>
+                            <option value="E4" style="background: #1a1a2e; color: white;">เรียล</option>
+                        </optgroup>
+                        <optgroup label="🦑 Squid Game" style="background: #1a1a2e; color: #0eb6e3;">
+                            <option value="S1" style="background: #1a1a2e; color: white;">โรแมนติก</option>
+                            <option value="S2" style="background: #1a1a2e; color: white;">ดราม่า</option>
+                            <option value="S3" style="background: #1a1a2e; color: white;">ปั่น</option>
+                            <option value="S4" style="background: #1a1a2e; color: white;">เรียล</option>
+                        </optgroup>
+                        <option value="NO_HORSE" style="background: #1a1a2e; color: #ff2e63; font-weight: 600;">❌ ไม่เอาม้า กรี้ดดดด 🚫🐴</option>
+                    </select>
+                    
+                    <button id="submitVoteBtn" onclick="submitFinalVote()" style="margin-top: 10px; width: 100%;">
+                        🎯 ส่งโหวต
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Fic Modal Popup -->
+        <div id="ficModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                                   background: rgba(0,0,0,0.9); z-index: 9999; 
+                                   align-items: center; justify-content: center; 
+                                   padding: 20px; overflow-y: auto;">
+            <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); 
+                        border: 2px solid #0eb6e3; border-radius: 20px; 
+                        padding: 30px; max-width: 600px; width: 100%; max-height: 90vh; 
+                        overflow-y: auto; position: relative;">
+                <button onclick="closeFicModal()" 
+                        style="position: absolute; top: 15px; right: 15px; 
+                               background: rgba(255, 46, 99, 0.2); border: 2px solid #ff2e63; 
+                               color: #ff2e63; padding: 10px 20px; border-radius: 10px; 
+                               cursor: pointer; font-size: 1rem; font-weight: 600; z-index: 10;">
+                    ✕ ปิด
+                </button>
+                
+                <div id="ficModalContent" style="margin-top: 50px; line-height: 1.8; color: #fff; font-size: 1rem;">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vote Page (ไม่ใช้แล้ว - รวมเข้ากับ allFicsPage) -->
+        <div id="votePage" class="hidden" style="display: none;">
+            <h1>🗳️ โหวตฟิคที่อยากให้เขียน</h1>
+            <p class="subtitle">เลือกฟิคที่อยากให้เขียนจริง ๆ เลย!</p>
+            
+            <p style="text-align: center; color: #00d9a3; margin-bottom: 30px; font-size: 1.05rem;">
+                💡 กดที่ฟิคเพื่อเลือก แล้วกด "ส่งโหวต"<br>
+                <span style="font-size: 0.9rem; color: #888;">หากต้องการดูเนื้อหาฟิค สามารถไป<a onclick="showAllFicsPage()" style="color: #0eb6e3; cursor: pointer; text-decoration: underline;">หน้าเฉลย</a>ได้</span>
+            </p>
+            
+            <!-- Vote Options -->
+            <div class="result-container">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <!-- วัยเรียน -->
+                    <div style="grid-column: 1 / -1; padding: 10px; background: rgba(14, 182, 227, 0.1); border-radius: 10px; text-align: center; color: #0eb6e3; font-weight: 600;">
+                        🎓 วัยเรียน
+                    </div>
+                    <div class="option" onclick="selectFinalVote('A1', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">โรแมนติก</div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('A2', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">ดราม่า</div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('A3', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">คอมเมดี้</div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('A4', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">เรียล</div>
+                    </div>
+                    
+                    <!-- ออฟฟิศ -->
+                    <div style="grid-column: 1 / -1; padding: 10px; background: rgba(14, 182, 227, 0.1); border-radius: 10px; text-align: center; color: #0eb6e3; font-weight: 600; margin-top: 10px;">
+                        🧑‍💼 ออฟฟิศ
+                    </div>
+                    <div class="option" onclick="selectFinalVote('B1', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">โรแมนติก</div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('B2', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">ดราม่า</div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('B3', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">คอมเมดี้</div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('B4', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">เรียล</div>
+                    </div>
+                    
+                    <!-- ต่างประเทศ -->
+                    <div style="grid-column: 1 / -1; padding: 10px; background: rgba(14, 182, 227, 0.1); border-radius: 10px; text-align: center; color: #0eb6e3; font-weight: 600; margin-top: 10px;">
+                        ✈️ ต่างประเทศ
+                    </div>
+                    <div class="option" onclick="selectFinalVote('E1', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">โรแมนติก</div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('E2', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">ดราม่า</div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('E3', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">คอมเมดี้</div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('E4', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">เรียล</div>
+                    </div>
+                    
+                    <!-- Squid Game -->
+                    <div style="grid-column: 1 / -1; padding: 10px; background: rgba(14, 182, 227, 0.1); border-radius: 10px; text-align: center; color: #0eb6e3; font-weight: 600; margin-top: 10px;">
+                        🦑 Squid Game
+                    </div>
+                    <div class="option" onclick="selectFinalVote('S1', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">โรแมนติก</div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('S2', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">ดราม่า</div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('S3', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">ปั่น</div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('S4', this)" style="padding: 12px; cursor: pointer;">
+                        <div style="font-size: 0.95rem;">เรียล</div>
+                    </div>
+                    
+                    <!-- ไม่เอาม้า -->
+                    <div class="option" onclick="selectFinalVote('NO_HORSE', this)" style="grid-column: 1 / -1; border-color: rgba(255, 46, 99, 0.5); background: rgba(255, 46, 99, 0.1); margin-top: 15px; padding: 15px; cursor: pointer;">
+                        <div style="font-size: 1.1rem; color: #ff2e63; font-weight: 600; text-align: center;">❌ ไม่เอาว้อยย! ไม่เอาม้า กรี้ดดดด หลอน</div>
+                    </div>
+                </div>
+                
+                <button id="submitVoteBtn" onclick="submitFinalVote()" disabled style="margin-top: 30px; width: 100%;">
+                    ส่งโหวต →
+                </button>
+            </div>
+            <div class="result-container">
+                <!-- Vote Options - แบบ Compact 2 คอลัมน์ -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;">
+                    <!-- วัยเรียน -->
+                    <div style="grid-column: 1 / -1; padding: 10px; background: rgba(14, 182, 227, 0.1); border-radius: 10px; text-align: center; color: #0eb6e3; font-weight: 600;">
+                        🎓 วัยเรียน
+                    </div>
+                    <div class="option" onclick="selectFinalVote('A1', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>โรแมนติก</span>
+                            <button onclick="event.stopPropagation(); showFicModal('A1');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('A2', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>ดราม่า</span>
+                            <button onclick="event.stopPropagation(); showFicModal('A2');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('A3', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>คอมเมดี้</span>
+                            <button onclick="event.stopPropagation(); showFicModal('A3');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('A4', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>เรียล</span>
+                            <button onclick="event.stopPropagation(); showFicModal('A4');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    
+                    <!-- ออฟฟิศ -->
+                    <div style="grid-column: 1 / -1; padding: 10px; background: rgba(14, 182, 227, 0.1); border-radius: 10px; text-align: center; color: #0eb6e3; font-weight: 600; margin-top: 10px;">
+                        🧑‍💼 ออฟฟิศ
+                    </div>
+                    <div class="option" onclick="selectFinalVote('B1', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>โรแมนติก</span>
+                            <button onclick="event.stopPropagation(); showFicModal('B1');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('B2', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>ดราม่า</span>
+                            <button onclick="event.stopPropagation(); showFicModal('B2');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('B3', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>คอมเมดี้</span>
+                            <button onclick="event.stopPropagation(); showFicModal('B3');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('B4', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>เรียล</span>
+                            <button onclick="event.stopPropagation(); showFicModal('B4');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    
+                    <!-- ต่างประเทศ -->
+                    <div style="grid-column: 1 / -1; padding: 10px; background: rgba(14, 182, 227, 0.1); border-radius: 10px; text-align: center; color: #0eb6e3; font-weight: 600; margin-top: 10px;">
+                        ✈️ ต่างประเทศ
+                    </div>
+                    <div class="option" onclick="selectFinalVote('E1', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>โรแมนติก</span>
+                            <button onclick="event.stopPropagation(); showFicModal('E1');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('E2', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>ดราม่า</span>
+                            <button onclick="event.stopPropagation(); showFicModal('E2');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('E3', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>คอมเมดี้</span>
+                            <button onclick="event.stopPropagation(); showFicModal('E3');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('E4', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>เรียล</span>
+                            <button onclick="event.stopPropagation(); showFicModal('E4');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Squid Game -->
+                    <div style="grid-column: 1 / -1; padding: 10px; background: rgba(14, 182, 227, 0.1); border-radius: 10px; text-align: center; color: #0eb6e3; font-weight: 600; margin-top: 10px;">
+                        🦑 Squid Game
+                    </div>
+                    <div class="option" onclick="selectFinalVote('S1', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>โรแมนติก</span>
+                            <button onclick="event.stopPropagation(); showFicModal('S1');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('S2', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>ดราม่า</span>
+                            <button onclick="event.stopPropagation(); showFicModal('S2');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('S3', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>ปั่น</span>
+                            <button onclick="event.stopPropagation(); showFicModal('S3');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    <div class="option" onclick="selectFinalVote('S4', this)" style="padding: 12px;">
+                        <div style="font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>เรียล</span>
+                            <button onclick="event.stopPropagation(); showFicModal('S4');" style="background: rgba(0, 217, 163, 0.2); border: 1px solid #00d9a3; color: #00d9a3; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">👁️ ดู</button>
+                        </div>
+                    </div>
+                    
+        </div>
+        
+        <!-- Fic Modal Popup -->
+        <div id="ficModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                                   background: rgba(0,0,0,0.9); z-index: 9999; 
+                                   align-items: center; justify-content: center; 
+                                   padding: 20px; overflow-y: auto;">
+            <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); 
+                        border: 2px solid #0eb6e3; border-radius: 20px; 
+                        padding: 30px; max-width: 600px; width: 100%; max-height: 90vh; 
+                        overflow-y: auto; position: relative;">
+                <button onclick="closeFicModal()" 
+                        style="position: absolute; top: 15px; right: 15px; 
+                               background: rgba(255, 46, 99, 0.2); border: 2px solid #ff2e63; 
+                               color: #ff2e63; padding: 10px 20px; border-radius: 10px; 
+                               cursor: pointer; font-size: 1rem; font-weight: 600; z-index: 10;">
+                    ✕ ปิด
+                </button>
+                
+                <div id="ficModalContent" style="margin-top: 50px; line-height: 1.8; color: #fff; font-size: 1rem;">
+                </div>
+            </div>
         </div>
     </div>
     
@@ -831,7 +1264,13 @@
             q5_code: null,
             ficPreference: null,
             customFic: null,
+            favoriteFic: null,
+            wantFinished: null,
+            plotDonation: null,
             messageToWriter: null,
+            finalVote: null,
+            finalVoteCode: null,
+            voteTimestamp: null,
             timestamp: null
         };
         
@@ -907,17 +1346,13 @@
         async function submitQuiz() {
             // Show loading immediately!
             const submitBtn = document.getElementById('next5');
-            const submitText = document.getElementById('submitText');
-            const submitLoading = document.getElementById('submitLoading');
             
             submitBtn.disabled = true;
-            submitText.classList.add('hidden');
-            submitLoading.classList.remove('hidden');
+            submitBtn.textContent = '⏳ กำลังวิเคราะห์...รอ 10 วินาที';
             
             answers.timestamp = new Date().toISOString();
             
-            // Send data to Google Sheets (async)
-            await sendToGoogleSheets();
+            // Don't send to Google Sheets yet - wait until final message is submitted
             
             // Hide quiz, show loading page
             document.getElementById('quizPages').classList.add('hidden');
@@ -925,8 +1360,7 @@
             
             // Reset button for next time
             submitBtn.disabled = false;
-            submitText.classList.remove('hidden');
-            submitLoading.classList.add('hidden');
+            submitBtn.textContent = '🎯 ดูผลลัพธ์ 🎁';
             
             // Simulate loading animation
             simulateLoading();
@@ -935,24 +1369,53 @@
         async function sendToGoogleSheets() {
             // Skip if no URL configured
             if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
-                console.log('Google Sheets not configured. Data:', answers);
-                return;
+                console.log('⚠️ Google Sheets not configured. Data:', answers);
+                return Promise.resolve();
             }
             
+            // เตรียมข้อมูลให้ตรงกับ Apps Script
+            const dataToSend = {
+                timestamp: answers.timestamp || new Date().toISOString(),
+                userName: answers.userName || '-',
+                userTwitter: answers.userTwitter || '-',
+                q1: answers.q1 || '-',
+                q2: answers.q2 || '-',
+                q3: answers.q3 || '-',
+                q4: answers.q4 || '-',
+                q5: answers.q5 || '-',
+                ficPreference: answers.ficPreference || '-',
+                customFic: answers.customFic || '-',
+                favoriteFic: answers.favoriteFic || '-',
+                wantFinished: answers.wantFinished || '-',
+                plotDonation: answers.plotDonation || '-',
+                messageToWriter: answers.messageToWriter || '-',
+                finalVote: answers.finalVote || '-',
+                voteTimestamp: answers.voteTimestamp || '-'
+            };
+            
+            console.log('📤 Sending to Google Sheets:');
+            console.log('URL:', GOOGLE_SCRIPT_URL);
+            console.log('Data:', dataToSend);
+            
             try {
+                // ส่งข้อมูลแบบ no-cors
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'text/plain',
                     },
-                    body: JSON.stringify(answers)
+                    body: JSON.stringify(dataToSend)
                 });
                 
-                console.log('Data sent to Google Sheets successfully!');
+                console.log('✅ ส่งข้อมูลไปยัง Google Sheets แล้ว (no-cors mode)');
+                
+                // รอสักหน่อยเพื่อให้แน่ใจว่าส่งไปแล้ว
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
             } catch (error) {
-                console.error('Error sending to Google Sheets:', error);
-                // Continue anyway - don't block user experience
+                console.error('❌ Error sending to Google Sheets:', error);
+                throw error;
             }
         }
         
@@ -978,8 +1441,20 @@
         
         function showResults() {
             document.getElementById('loadingPage').classList.add('hidden');
-            document.getElementById('resultPage').classList.remove('hidden');
+            document.getElementById('answerSummaryPage').classList.remove('hidden');
             calculateResults();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+        
+        function showCharacterReveal() {
+            document.querySelectorAll('[id$="Page"]').forEach(page => page.classList.add('hidden'));
+            document.getElementById('characterRevealPage').classList.remove('hidden');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+        
+        function showFullResults() {
+            document.getElementById('characterRevealPage').classList.add('hidden');
+            document.getElementById('resultPage').classList.remove('hidden');
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
         
@@ -997,6 +1472,9 @@
             
             document.getElementById('resultSetting').textContent = answers.q2;
             document.getElementById('resultSettingInterpret').textContent = '→ แปลว่า "' + getInterpretation('setting', setting) + '"';
+            
+            // Display character reveal
+            getCharacterReveal(character);
             
             document.getElementById('resultCharacter').textContent = answers.q3;
             document.getElementById('resultCharacterInterpret').textContent = '→ แปลว่า "' + getInterpretation('character', character) + '"';
@@ -1021,51 +1499,70 @@
         function getInterpretation(category, code) {
             const interpretations = {
                 tone: {
-                    warmth: 'ความสัมพันธ์ที่ค่อย ๆ เติบโต',
-                    angst: 'การเผชิญหน้ากับความจริง',
-                    chaos: 'เรื่องที่เกิดขึ้นโดยไม่ได้ตั้งใจ',
-                    realism: 'การเรียนรู้ชีวิตผ่านประสบการณ์'
+                    warmth: 'อบอุ่นหัวใจ ทั้งคนและม้า',
+                    angst: 'ดราม่าขมๆ ศึกชิงม้า',
+                    chaos: 'เรื่องที่เกิดขึ้นโดยไม่ได้ตั้งใจ หนียังไงก็ไม่พ้นม้า',
+                    realism: 'เรื่องราวคล้ายโลกความจริง ที่มีม้าเป็นส่วนหนึ่งในชีวิต'
                 },
                 setting: {
                     youth: 'ลงวิชาขี่ม้า หรือ ม้าศึกษา',
                     adult: 'ทำธุรกิจม้า หรือเลิกงานไปขี่ม้าเล่น',
                     journey: 'ไปเที่ยว เลยลงขี่ม้าเล่น',
-                    squid: 'มีด่านให้เลี้ยงม้าแข่งกัน ม้าดื้อ'
+                    squid: 'มีด่านให้เลี้ยงม้าแข่งกัน'
                 },
                 character: {
-                    tsundere: 'คนที่ดูไม่ถนัดแสดงออก แต่ผูกพันกับบางสิ่งมาก',
-                    control: 'คนที่เก็บความรู้สึกไว้ลึก ๆ',
-                    soft: 'คนที่ให้ความรักอย่างไม่มีเงื่อนไข',
-                    trauma: 'คนธรรมดามีความเครียด เลยเลี้ยงม้าแก้เครียด',
-                    chaotic: 'มีจองแบรับจบ'
+                    tsundere: 'กีฮุน คนสวยขา ขี้วีน ใจอ่อน รักสัตว์ รักม้า',
+                    control: 'อินโฮพี่เสือขี้เก็ก จีบไม่ดูเวลา และสถานที่ ระวังพี่เสือหลอกไปเล่นกันในคอกม้า',
+                    soft: 'อินโฮ หมาเด็ก ขี้อ้อน คุณกีฮุนครับๆๆๆ ผมอยากขี่ม้า พาผมไปหน่อยนะคับๆๆๆ'
                 },
                 ending: {
-                    heal: 'การเติบโตไปพร้อมกัน',
-                    bittersweet: 'การยอมรับความจริงอย่างอ่อนโยน',
-                    chaos: 'ความปั่นที่หยุดไม่ได้',
+                    heal: 'การเติบโตไปพร้อมกัน ทั้งคนและม้าตัวน้อย',
+                    bittersweet: 'การยอมรับความจริงว่า...ยังไงก็ต้องมีม้า',
+                    chaos: 'ความปั่นที่หยุดไม่ได้ เหมือนสูบม้า',
                     horse: 'ขอแค่มีม้าในชีวิต'
                 },
                 unwanted: {
-                    irony_max: 'ไม่ต้องการ + ไม่มี = <strong style="color: #ff2e63;">ต้องการมี!</strong> (ไม่ ไม่ = ใช่)',
-                    irony_high: 'ไม่ต้องการให้มีสัตว์ = เลยใส่<strong style="color: #ff2e63;">สัตว์ที่ไม่ใช่สัตว์</strong> (รักษ์สัญญา)',
-                    irony_mid: 'เน้นคนล้วน ๆ = เลยใส่<strong style="color: #ff2e63;">คนล้วน...กับม้า</strong> (คนก็ยังเยอะ)',
-                    irony_mid2: 'ไม่เอาฟาร์มชนบท = เลยใส่<strong style="color: #ff2e63;">สนามขี่ม้าในเมือง</strong> (ไม่ใช่ฟาร์ม)',
-                    irony_low: 'ไม่อยากมีอะไรไม่จำเป็น = <strong style="color: #ff2e63;">แต่ม้าจำเป็นมาก</strong> (คิดดูนะ)'
+                    irony_max: 'ไม่ต้องการ + ไม่มี = ต้องการมีม้า!(ไม่ ไม่ = ใช่)',
+                    irony_high: 'ไม่ต้องการให้มีสัตว์ + ไม่มี = ต้องการมีสัตว์ (ม้า)! (ไม่ ไม่ = ใช่)',
+                    irony_mid: 'เน้นคนล้วน ๆ + ไม่มี = เลยใส่ "คนล้วน...กับม้า (คนก็ยังเยอะ)',
+                    irony_mid2: 'ไม่เอาฟาร์มชนบท = เลยใส่ "สนามขี่ม้าในเมือง (ไม่ใช่ฟาร์ม)',
+                    irony_low: 'ไม่อยากมีอะไรไม่จำเป็น + ไม่มี = "ต้องการมีม้า!(ไม่ ไม่ = ใช่)'
                 }
             };
             
             return interpretations[category][code] || '';
         }
         
+        function getCharacterReveal(characterCode) {
+            const characterData = {
+                tsundere: {
+                    text: 'กีฮุน คนสวยขา ขี้วีน ใจอ่อน รักสัตว์ รักม้า',
+                    image: 'images/gihun.jpg'
+                },
+                control: {
+                    text: 'อินโฮพี่เสือขี้เก็ก จีบไม่ดูเวลา และสถานที่ ระวังพี่เสือหลอกไปเล่นกันในคอกม้า',
+                    image: 'images/inho_control.jpg'
+                },
+                soft: {
+                    text: 'อินโฮ หมาเด็ก ขี้อ้อน คุณกีฮุนครับๆๆๆ ผมอยากขี่ม้า พาผมไปหน่อยนะคับๆๆๆ',
+                    image: 'images/inho_soft.jpg'
+                }
+            };
+            
+            const char = characterData[characterCode] || { text: 'ตัวละครพิเศษ', image: 'images/default.jpg' };
+            
+            // Set character image and text
+            document.getElementById('characterImage').src = char.image;
+            document.getElementById('characterRevealText').innerHTML = char.text;
+            
+            return char.text;
+        }
+        
         function generateFinalStory(tone, setting, character, ending, irony) {
             // STEP 1: กำหนดพล็อตหลักตามเอกสาร
             let plot = "";
             
-            // ลบ F1 แล้ว - double negative กวนตีน!
-            if (tone === "chaos" || character === "chaotic") {
-                plot = "C";  // คอมเมดี้
-            }
-            else if (setting === "journey") {
+            if (setting === "journey") {
                 plot = "E";  // ต่างประเทศ
             }
             else if (setting === "squid") {
@@ -1084,10 +1581,7 @@
             // STEP 2: กำหนดเวอร์ชันผลลัพธ์
             let version = "";
             
-            if (plot === "C" || plot === "F" || plot === "S") {
-                version = "1";  // พล็อตเหล่านี้ใช้เวอร์ชันเดียว
-            }
-            else if (tone === "warmth" && (ending === "heal" || ending === "horse")) {
+            if (tone === "warmth" && (ending === "heal" || ending === "horse")) {
                 version = "1";  // อบอุ่น
             }
             else if (tone === "angst" || ending === "bittersweet") {
@@ -1115,153 +1609,152 @@
                 "A1": `🎓 วัยเรียน + โรแมนติกอบอุ่น<br><br>
                        🎓 <strong>ฟิควัยเรียนอบอุ่น</strong><br><br>
                        กีฮุนและอินโฮเป็นนักศึกษามหาวิทยาลัย<br>
-                       ที่ลงทะเบียนวิชาเลือกเดียวกันโดยไม่ได้นัดหมาย<br>
-                       และพบว่ามันคือวิชา <strong>"พื้นฐานการขี่ม้า"</strong><br><br>
-                       อินโฮดูนิ่ง สุขุม เหมือนไม่อินกับอะไร<br>
-                       แต่กลับใจเย็นเวลาจับบังเหียน<br>
-                       กีฮุนปากเก่ง ใจร้อน<br>
-                       แต่กลัวม้าจนต้องจับแขนอินโฮตลอดเวลา<br><br>
-                       ความสัมพันธ์ค่อย ๆ เติบโต<br>
-                       ระหว่างเสียงกีบม้า กลิ่นหญ้า<br>
-                       และการเรียนรู้การไว้ใจไปพร้อมกัน`,
+                       อินโฮกับกีฮุนลงวิชาเลือกเดียวกันแบบไม่ได้นัดหมาย 
+                       นึกว่าเรียนเศรษฐศาสตร์ กลายเป็น <strong>“พื้นฐานการขี่ม้า 101”</strong>
+                       <br><br>
+                       กีฮุนปากแจ๋ว แต่ดันกลัวม้า<br>
+                       อินโฮนิ่ง ๆ ทำเก็กขี่ได้ แต่ก็ไม่บอกว่าเคยเป็นนักขี่ม้าเยาวชน 🐴`,
                 
                 "A2": `🎓 วัยเรียน + ดราม่าหนัก<br><br>
-                       🎓 <strong>ฟิควัยเรียนดราม่า</strong><br>
-                       <em>"ศึกสายใยในคอกม้า"</em><br><br>
-                       กีฮุนเป็นเด็กปี 1 ที่หนีความจริงมาจากโซล เพราะเพิ่งถูกบังคับให้เลิกกับแฟน<br>
-                       เขาหวังว่าจะได้เริ่มต้นใหม่ที่มหาวิทยาลัยแห่งนี้<br>
-                       แต่กลับต้องมาเจออินโฮ รุ่นพี่ปี 4 สุดขรึมที่เป็นรองประธานชมรมขี่ม้า<br>
-                       ผู้ซ่อนบาดแผลบางอย่างไว้ใต้แววตานิ่งเย็น<br><br>
-                       อินโฮไม่เคยสนใจรุ่นน้องคนไหน<br>
-                       แต่เขากลับยื่นมือมาช่วยกีฮุนตอนที่ม้าคลั่งพุ่งใส่<br>
-                       กีฮุนคิดว่ามันแค่ความบังเอิญ—แต่ทำไมอินโฮถึงรู้ชื่อเขาอยู่แล้ว?<br><br>
-                       เบื้องหลังคอกม้าอันเงียบงันคือความลับในอดีตที่ผูกพันทั้งคู่<br>
-                       ความสัมพันธ์ที่เริ่มต้นจากบาดแผล กำลังจะกลายเป็นดราม่าที่ไม่มีใครควบคุมได้…<br>
-                       แม้แต่ม้าก็ยังอยากหนีออกจากคอก<br><br>
-                       <em>"พี่ช่วยผมเพราะสงสาร หรือเพราะพี่รู้จักผมอยู่แล้ว?"</em><br>
-                       <em>"นายเคยบอกว่าชอบม้า…แต่ตอนนั้น นายไม่ได้หมายถึงสัตว์ใช่ไหม?"</em>`,
+                       🎓 <strong>ฟิควัยเรียนดราม่าเข้มในคอกม้า</strong><br><br>
+                       กีฮุนเด็กใหม่หนีอดีตจากโซล<br>
+                       แต่ดันถูกม้าคลั่งพุ่งใส่กลางสนาม — อินโฮ รุ่นพี่ปี 4 พุ่งเข้ามาช่วย<br><br>
+                       เขาคือรองประธานชมรมขี่ม้า ผู้ไม่เคยเหลียวแลใคร<br>
+                       แต่กลับถามกีฮุนหลังเหตุการณ์นั้นว่า<br>
+                       <em>"ยังกลัวม้าอยู่ไหม…หรือแค่กลัวผม?"🐴🖤</em>`,
                 
                 "A3": `🎓 วัยเรียน + คอมเมดี้<br><br>
-                       🎓 <strong>ฟิควัยเรียนสายพัง</strong><br>
-                       <em>"ลงทะเบียนวิชาม้าด้วยใจ (แต่ไม่ได้ตั้งใจ)"</em><br><br>
-                       กีฮุนเป็นเด็กบริหารปี 1 ที่มั่นใจเต็มร้อยว่าตัวเองกดลงทะเบียนวิชา "การบริหารเชิงกลยุทธ์"<br>
-                       แต่พอเปิดเทอมกลับพบว่าตัวเองติดอยู่ในวิชา <strong>"การดูแลสุขภาพม้าเบื้องต้น"</strong><br>
-                       พร้อมกับนักศึกษาสัตวศาสตร์ผู้เคร่งขรึมอย่าง "อินโฮ"<br>
-                       ที่ดูเหมือนจะจริงจังกับชีวิตยิ่งกว่าม้าที่เดินสวนสนาม<br><br>
-                       อินโฮ: <em>"ถ้าคุณไม่ตั้งใจเรียน ผมขอให้ถอนวิชานี้ครับ"</em><br>
-                       กีฮุน: <em>"พี่ ผมกดผิด! แล้ววิชานี้คืออะไร! ทำไมผมต้องแปรงขนให้ม้า!?"</em><br><br>
-                       วันแรกกีฮุนโดนเตะ (โดยม้า)<br>
-                       วันถัดมาโดนกัด (ก็ยังโดยม้า)<br>
-                       แต่วันที่สามเขาเริ่มไม่แน่ใจแล้วว่าตัวเองชอบม้า...หรือชอบคนจูงม้ากันแน่<br><br>
-                       ปัญหาไม่ได้อยู่ที่ม้า<br>
-                       แต่อยู่ที่ใจมันวิ่งเร็วกว่าม้าต่างหาก!<br><br>
-                       <em>"ผมถอนวิชานี้ไม่ได้แล้วครับ"</em><br>
-                       <em>"ทำไม?"</em><br>
-                       <em>"เพราะตอนนี้...ผมอยากมาหาม้าทุกวันเลยครับ"</em><br>
-                       <em>"คุณหมายถึงผมหรืออินฮอส?"</em><br>
-                       <em>"...พี่อะ"</em>`,
+                       🎓 <strong>ฟิควัยเรียนสายลงวิชาผิด</strong><br><br>
+                       กีฮุน เด็กบริหารปี 1 มั่นใจเต็มร้อยว่าตัวเองกดลง "การบริหารเชิงกลยุทธ์"<br>
+                       แต่พอเปิดเทอม กลับมาโผล่ในวิชา <strong>"การขี่ม้าและดูแลสุขภาพม้าเบื้องต้น"</strong> แบบงง ๆ<br><br>
+                       เจออินโฮ—นักศึกษาสัตวศาสตร์หน้าตานิ่ง ๆ ผู้จริงจังกับชีวิต<br>
+                       รวมไปถึงขี้เก็กทั้งคนและม้า<br><br>
+                       อินโฮ: <em>"ถ้าคุณไม่ตั้งใจเรียน ผมแนะนำให้ถอนครับ"</em><br>
+                       กีฮุน: <em>"พี่ ผมกดผิด! แล้วนี่มันวิชาอะไร!? ทำไมผมต้องแปรงขนให้ม้า!?" 🐴💥</em>`,
                 
                 "A4": `🎓 วัยเรียน + ชีวิตเรียล<br><br>
-                       🎓 <strong>ฟิควัยเรียนเรียล ๆ</strong><br>
-                       <em>"ขี่ม้าในวันที่ไม่ไหว"</em><br><br>
-                       เด็กมหาลัยสองคนที่ไม่รู้จักกัน —<br>
-                       กีฮุน ปี 2 สายบริหาร เรียนหนักเพราะต้องแบกเกรด<br>
-                       อินโฮ ปี 4 วิศวะ ที่เพิ่งลาออกจากการเป็นประธานชมรมเพราะ burn out<br><br>
-                       ต่างคนต่างกดลง "วิชาขี่ม้าเบื้องต้น" เพราะมันดูไม่ต้องคิดอะไรมาก<br>
-                       ไม่มีใครหวังอะไรกับวิชานี้ — ไม่ได้อยากขี่ม้า ไม่ได้อยากได้ A<br>
-                       แค่อยากอยู่เงียบ ๆ กับอะไรที่ไม่พูดมาก<br><br>
-                       แต่วิชานี้กลับกลายเป็นที่เดียว<br>
-                       ที่พวกเขาไม่ต้องพยายามเป็นใคร<br>
-                       และม้ากลายเป็นข้ออ้างให้ได้อยู่ข้างกัน...ในวันที่ใจยังไม่ไหวพอจะรักอะไรเลย<br><br>
-                       <em>"ผมไม่คิดว่าจะมาเรียนวิชานี้แล้วได้อะไรนะ"</em><br>
-                       <em>"อืม"</em><br>
-                       <em>"แต่ตอนนี้ ผมคิดว่าม้ารู้ว่าผมร้องไห้"</em><br>
-                       <em>"…ผมก็คิดว่าอินฮอสเข้าใจผมอยู่คนเดียวเหมือนกัน"</em><br><br>
-                       (เงียบไปสักพัก ก่อนอีกคนจะพูดเบา ๆ)<br>
-                       <em>"แต่นายก็เข้าใจผมนะ"</em>`,
+                       🎓 <strong>ฟิคมหาลัยเรียล ๆ แต่มีม้าเฉย</strong><br><br>
+                       กีฮุน ปี 2 บริหาร แบกเกรดจนหลังแทบหัก<br>
+                       อินโฮ ปี 4 วิศวะ เพิ่งลาออกจากตำแหน่งประธานชมรมเพราะ burn out หนัก<br><br>
+                       ทั้งสองคนไม่รู้จักกัน แต่ดันมากดลง "วิชาขี่ม้าเบื้องต้น" เพราะคิดว่าเก็บ A ง่าย<br><br>
+                       จนมาเจอกันตอนต้องช่วยกันตักขี้ม้า กลางแดด 35 องศา<br><br>
+                       กีฮุน: <em>"นี่มันไม่ใช่วิชาเลือกแล้วครับพี่ นี่มันค่ายลูกเสือ" 🐴🔥</em>`,
                 
                 // 🐎 PLOT B — ออฟฟิศ/ชีวิตเรียล
                 "B1": `🧑‍💼 ออฟฟิศ + โรแมนติกอบอุ่น<br><br>
-                       🎯 <strong>ฟิคออฟฟิศอบอุ่น</strong><br>
-                       กีฮุนทำงานออฟฟิศธรรมดา<br>
-                       อินโฮเป็นหัวหน้าที่ทุกคนเกรงใจ<br><br>
-                       หลังเลิกงาน<br>
-                       ทั้งคู่กลับไปเจอกันที่สนามขี่ม้า<br>
-                       ในฐานะคนธรรมดาที่ไม่ต้องเก่งตลอดเวลา<br><br>
-                       ม้าไม่สนตำแหน่ง ไม่สน KPI<br>
-                       แต่มันจำได้ว่าใครใจเย็นพอ`,
+                       🎯 <strong>ฟิคออฟฟิศอุ่น ๆ แต่มีลางแปลก ๆ...</strong><br><br>
+                       กีฮุน: พนักงานออฟฟิศธรรมดาที่ชอบเลิกงานตรงเวลา<br>
+                       อินโฮ: หัวหน้าขรึม ๆ ที่ใครก็ไม่กล้าทักไลน์นอกเวลางาน<br><br>
+                       ทั้งสองดูไม่มีอะไรเกี่ยวข้องกันเลย...<br>
+                       จนวันหนึ่งเจอกันที่สนามแข่งม้าหลังเลิกงาน<br><br>
+                       <em>"พี่...ก็มาเหรอครับ?"</em><br>
+                       <em>"คุณก็มาประจำไม่ใช่เหรอ"</em><br><br>
+                       🐴 เริ่มจากออฟฟิศจืด ๆ แล้วจู่ ๆ ก็ไปสนามแทงม้าเฉย`,
                 
                 "B2": `🧑‍💼 ออฟฟิศ + ดราม่าหนัก<br><br>
-                       🎯 <strong>ฟิคออฟฟิศดราม่า</strong><br>
-                       ความรักเกิดขึ้นระหว่างงาน<br>
-                       และการดูแลม้าที่ต้องใช้เวลา<br><br>
-                       ม้าสอนให้ช้าลง แต่ชีวิตไม่รอ<br>
-                       บางความสัมพันธ์<br>
-                       จึงต้องแพ้ให้กับความจริง`,
+                       🎯 <strong>ฟิคออฟฟิศดราม่าหนัก...กับอดีตวันไนท์ที่ไม่จบแค่นั้น</strong><br><br>
+                       กีฮุน: ครีเอทีฟแบรนด์ไฟแรง ที่แค่จะลืมเรื่องคืนนั้น<br>
+                       อินโฮ: ผู้บริหารฝั่งเอเจนซี่ ที่ทำเหมือนไม่เคยรู้จักกันมาก่อน<br><br>
+                       ทั้งสองไม่ควรวนกลับมาเจอกันอีก<br>
+                       แต่ทริป team building ที่เชจูกลับพาทั้งคู่มาขี่ม้าคู่กันแบบงง ๆ<br><br>
+                       ตอนควบม้าขึ้นเขา อินโฮหันมาพูดเบา ๆ ว่า<br>
+                       <em>"ขี่ให้ดีนะครับ"</em><br>
+                       <em>"พี่หมายถึงม้าใช่มั้ย"</em><br>
+                       <em>"แล้วแต่คุณจะนึกถึงอะไรคืนนั้น"</em><br><br>
+                       🐴 ไม่มีใครพูดถึงคืนนั้น...แต่ม้าในสนามเหมือนจะรู้ทัน`,
                 
                 "B3": `🧑‍💼 ออฟฟิศ + คอมเมดี้<br><br>
-                       🎯 <strong>ฟิคออฟฟิศสายพัง</strong><br>
-                       กีฮุนถูกชวนไป "ทำธุรกิจม้า"<br>
-                       อินโฮบอกว่า "ลองดู"<br><br>
-                       สุดท้ายไม่มีใครเข้าใจธุรกิจ<br>
-                       แต่ทุกคนเข้าใจม้าดีกว่ากัน`,
+                       🎯 <strong>ฟิคออฟฟิศสายปั่น</strong><br><br>
+                       กีฮุนถูกชวนไปสัมมนาออฟฟิศ คิดว่าจะได้อัปสกิลการตลาด<br>
+                       แต่พอไปถึง กลับมีม้าเดินอยู่หน้าเวที และหัวข้อบนจอคือ<br>
+                       <strong>"ขี่ม้าเปลี่ยนชีวิต ด้วยระบบ Passive Income"</strong><br><br>
+                       อินโฮ — วิทยากรเจ้าของธุรกิจหน้าโคตรนิ่ง เดินขึ้นเวทีพร้อมไมค์ แล้วพูดว่า<br>
+                       <em>"ลองดูสักครั้งครับ เดี๋ยวคุณจะติดใจ"</em><br><br>
+                       กีฮุนลุกพรวดทันทีตะโกนกลางห้องว่า<br>
+                       <em>"คุณหลอกผมมาแบบนี้ได้ยังไง!! ผมจะแจ้ง ๆ ๆ ๆ!!" 🐴💢</em><br><br>
+                       🐴 ฟิคนี้ไม่รู้จะได้งานใหม่หรือได้คดีติดตัว`,
                 
                 "B4": `🧑‍💼 ออฟฟิศ + ชีวิตเรียล<br><br>
-                       🎯 <strong>ฟิคออฟฟิศเรียล ๆ</strong><br>
-                       คนทำงานสองคน<br>
-                       ที่ใช้การขี่ม้าเป็นวิธีพักใจ<br>
-                       โดยไม่ต้องคุยอะไรกันมาก`,
-                
-                // 🐎 PLOT C — คอมเมดี้
-                "C1": `🤡 คอมเมดี้เต็มรูปแบบ<br><br>
-                       ระบบตรวจพบความผิดพลาด<br>
-                       เชิงการตัดสินใจ<br><br>
-                       🤡 <strong>ฟิคคอมเมดี้เต็มรูปแบบ</strong><br>
-                       ที่ความรักเกิดขึ้น<br>
-                       ระหว่างความซวย<br>
-                       และเสียงหัวเราะที่หยุดไม่ได้<br><br>
-                       ม้าดื้อ คนงง<br>
-                       แต่ทุกคนมีความสุข`,
+                       🎯 <strong>ฟิคออฟฟิศสายหมดไฟ</strong><br><br>
+                       หมดแพชชัน เบื่องาน เบื่อตัวเอง<br>
+                       เลยกดสมัครคอร์ส "พัฒนาตัวเองสำหรับคนทำงานยุคใหม่" แบบไม่คิดอะไร<br><br>
+                       ตัดภาพไปอีกที — กลายเป็นคอร์สขี่ม้า ยืนอยู่กลางทุ่ง หัดใส่อานม้าอยู่กับผู้ชายแปลกหน้า<br>
+                       ที่บอกว่า "จับบังเหียนให้มั่น แล้วปล่อยให้ม้ามันพาไป"<br><br>
+                       🐴 ขี้เกียจพอทน ขี้ม้าพอเลย 🐴💢`,
                 
                 // 🐎 PLOT E — ต่างประเทศ
                 "E1": `✈️ ต่างประเทศ + โรแมนติก<br><br>
-                       ✈️ <strong>ฟิคต่างแดนอบอุ่น</strong><br>
-                       กีฮุนไปเที่ยว<br>
-                       อินโฮเป็นคนท้องถิ่นที่พาไปลองขี่ม้า<br><br>
-                       ภาษาไม่ตรง<br>
-                       แต่จังหวะหัวใจตรงกัน<br>
-                       โดยมีม้าเป็นสื่อกลาง`,
+                       ✈️ <strong>ฟิคต่างแดนอบอุ่น (ม้าไม่ควรมี แต่ก็มีได้ไง)</strong><br><br>
+                       กีฮุนสมัครแพ็กเกจทัวร์ "พักผ่อนธรรมชาติในยุโรป" แบบไม่อ่านรายละเอียด<br>
+                       ตัดภาพไป — วันรุ่งขึ้นยืนอยู่กลางฟาร์ม กับม้าตัวหนึ่ง<br><br>
+                       อินโฮเป็นไกด์ท้องถิ่นที่มารับตรงเวลา<br>
+                       <em>"ขึ้นม้าสิครับ เดี๋ยวผมจูงให้"</em><br><br>
+                       ยังไม่พร้อมแต่ม้าก็เริ่มเดิน อินโฮเดินตามข้าง ๆ เงียบ ๆ<br>
+                       บางจังหวะกีฮุนหันไปเจออีกฝ่าย ก็รู้ว่ากำลังประหม่าและเขิน<br><br>
+                       🐴 ไม่ได้ตั้งใจมาขี่ม้า แต่ดันมาตกหลุมรักคนจูงม้าแทน`,
                 
                 "E2": `✈️ ต่างประเทศ + ดราม่า<br><br>
-                       ✈️ <strong>ฟิคต่างแดนดราม่า</strong><br>
-                       บางความสัมพันธ์<br>
-                       มีไว้เพื่อให้จำ<br>
-                       ไม่ใช่เพื่อพากลับบ้าน<br><br>
-                       ม้าอยู่ ประเทศอยู่<br>
-                       แต่คนต้องกลับ`,
+                       ✈️ <strong>ฟิคต่างแดนดราม่าแบบไม่ตั้งใจ</strong><br><br>
+                       กีฮุนหนีทุกอย่างมาเที่ยวคนเดียว หวังแค่เปลี่ยนที่หายใจ<br>
+                       แต่ดันเจอผู้ชายแปลกหน้าในทริปเดียวกัน<br><br>
+                       "พรุ่งนี้ว่างไหม" เขาถามตอนรอรถบัส<br>
+                       "...ทำไมเหรอครับ"<br>
+                       "จะชวนไปขี่ม้า"<br><br>
+                       ดูเหมือนชวนเล่น ๆ แต่สายตาเขาไม่ได้ล้อเล่น<br><br>
+                       🐴 ไม่ได้ตั้งใจมา แต่ม้าก็ยังต้องขี่อีกเหรอ`,
                 
                 "E3": `✈️ ต่างประเทศ + คอมเมดี้<br><br>
-                       ✈️ <strong>ฟิคต่างแดนสายพัง</strong><br>
-                       ไปเที่ยวเฉย ๆ<br>
-                       แต่ดันลงคลาสขี่ม้า<br>
-                       เพราะอ่านป้ายผิดภาษา`,
+                       ✈️ <strong>ฟิคต่างแดนสายพังแบบไม่ได้ตั้งใจ</strong><br><br>
+                       แพลนไว้จะเที่ยวธรรมชาติชิล ๆ คนเดียว<br>
+                       เดินผ่านป้ายภาษาท้องถิ่น เห็นรูปคนเดินเล่นอยู่กลางทุ่งหญ้า เลยกดจองไปแบบไม่คิด<br><br>
+                       ตัดภาพมา — ยืนอยู่กลางคอกม้า มีกลิ่นฟาง ยืนอยู่ข้างม้าตัวเท่ารถเก๋ง<br><br>
+                       อินโฮเป็นครูฝึกที่พูดอังกฤษได้น้อย แต่บอกชัดว่า<br>
+                       <em>"No refund, only ride the horse"</em><br><br>
+                       🐴 ไม่ได้อยากขี่ม้า แค่อยากหนีความจริง…แต่ดันหนีม้าไม่พ้น บ้าเอ้ย`,
                 
                 "E4": `✈️ ต่างประเทศ + เรียล<br><br>
-                       ✈️ <strong>ฟิคต่างแดนเรียล ๆ</strong><br>
-                       ขี่ม้าเป็นกิจกรรมเดียว<br>
-                       ที่ไม่ต้องอธิบายอะไร<br>
-                       ในประเทศที่ไม่มีใครรู้จักกัน`,
+                       ✈️ <strong>ฟิคต่างแดนเรียล ๆ แบบไม่ได้ตั้งใจจะเจอใคร</strong><br><br>
+                       กีฮุนมาเที่ยวประเทศที่ไม่คุ้น ลืมลงทะเบียนกิจกรรม<br>
+                       เปิดตารางเช้า ๆ เหลือแค่ "ขี่ม้าชมธรรมชาติ" ช่องเดียวที่ไม่เต็ม<br><br>
+                       ...แล้วเจออีกคนที่ลืมลงทะเบียนเหมือนกัน<br><br>
+                       🐴 ลืมลงทะเบียน...แต่อย่าลืมว่ายังมีกิจกรรมขี่ม้านะจ๊ะ`,
                 
                 // 🐎 PLOT S — Squid Game
-                "S1": `🟥 Squid Game Theme<br><br>
-                       🟥 <strong>ฟิคเกมม้าโหด</strong><br>
-                       ในด่านที่ต้องเลี้ยงม้าให้รอด<br>
-                       กีฮุนและอินโฮเลือกช่วยกัน<br>
-                       แทนที่จะแข่งกัน<br><br>
-                       ม้าดื้อ กติกาโหด<br>
-                       และการตัดสินใจว่าจะรักษาคะแนน<br>
-                       หรือรักษาใครสักคน<br><br>
-                       (ระบบรวนทั้งเกม เพราะม้าไม่เล่นตามกติกา)`
+                "S1": `🦑 Squid Game + โรแมนติก<br><br>
+                       🦑 <strong>ฟิคเกมม้าโหด (แต่หัวใจอบอุ่น)</strong><br><br>
+                       ด่าน: Happy คนเลี้ยงม้า — ผู้เล่นต้องจับคู่กับอีกคน และร่วมกันฝึกม้าหนึ่งตัวให้เชื่องใน 72 ชม.<br><br>
+                       กีฮุนจับคู่ได้กับอินโฮ(ยองอิล)<br>
+                       ตอนคืนแรกม้าหนีไปกลางดึก ทั้งสองคนต้องตามไปจนตัวเปื้อนโคลน<br>
+                       อินโฮถอดเสื้อคลุมตัวเองมาคลุมให้ แล้วบอกแผ่ว ๆ<br>
+                       <em>"ถ้าเรารอด...ผมอยากชวนคุณไปขี่ม้าด้วยกัน"</em><br><br>
+                       🐴 ม้าอาจเชื่องยาก แต่คนเชื่องง่ายกว่าที่คิด`,
+                
+                "S2": `🦑 Squid Game + ดราม่า<br><br>
+                       🦑 <strong>ฟิคเกมม้าโหด (จริง ๆ)</strong><br><br>
+                       ด่าน: Happy คนเลี้ยงม้า — ม้าหนึ่งตัว ต่อคนหนึ่งคน ใครไม่มีม้าอยู่ด้วย = out<br><br>
+                       เหลือม้าตัวสุดท้าย อินโฮ (ยองอิล) กับกีฮุนเดินมาหยุดตรงหน้าในเวลาเดียวกัน<br>
+                       กีฮุนลังเล อินโฮกลับดันไหล่เขาเบา ๆ<br>
+                       <em>"เอาน้องไปเถอะ...คุณยังไม่ควรออกตอนนี้"</em><br>
+                       แล้วเดินถอยออกไปอย่างเงียบ ๆ โดยไม่มองกลับมา<br><br>
+                       🐴 ไม่มีเสียงปืน แต่มีม้า`,
+                
+                "S3": `🦑 Squid Game + ปั่น<br><br>
+                       🦑 <strong>ฟิคเกมม้าสายพัง</strong><br><br>
+                       ด่าน: Happy คนเลี้ยงม้า — ผู้เล่นต้องฝึกม้าให้เชื่องภายใน 3 วัน ใครโดนม้าเตะคือ out<br><br>
+                       อินโฮ (ยองอิล) จับบังเหียนมือเดียว ท่าทางเหมือนเคยควบม้าข้ามเขามาแล้วสามรอบ<br><br>
+                       <em>"คุณครับ...มันจ้องผมแรงมาก"</em><br>
+                       <em>"มันเห็นคุณเป็นเหยื่อ"</em><br><br>
+                       🐴 ฟิคนี้ไม่ได้กลัวตาย แต่กลัวม้ากัดมากกว่า`,
+                
+                "S4": `🦑 Squid Game + เรียล<br><br>
+                       🦑 <strong>ฟิคเกมม้าเรียล ๆ</strong><br><br>
+                       ด่าน: Happy คนเลี้ยงม้า — ต้องดูแลม้าให้ไม่พยศ จนจบด่าน<br><br>
+                       ไม่มีใครบอกว่าม้ามีอารมณ์ยังไง<br>
+                       กีฮุนทำทุกอย่างตามคู่มือ แต่พอเวลาจริง ม้ากลับไม่ขยับเลย<br>
+                       กรรมการเริ่มนับถอยหลัง<br>
+                       อินโฮ (ยองอิล) อยู่คอกข้าง ๆ ตะโกนมา<br>
+                       <em>"อย่าคิดว่าคุมมันสิ...คิดแค่ว่ารอดไปด้วยกัน"</em><br><br>
+                       🐴 การทำให้ใครสักตัวไว้ใจคุณ ในโลกที่ไม่มีใครไว้ใจใครแล้ว`
             };
         }
         
@@ -1274,10 +1767,8 @@
         function selectFeedback(type, element) {
             selectedFeedback = type;
             
-            // Save full text
-            const fullText = element.querySelector('div:first-child').textContent.trim();
-            answers.ficPreference = fullText;
-            answers.ficPreference_code = type; // Keep code as backup
+            // Save code for Google Sheets
+            answers.ficPreference = type; // 'accept' or 'reject'
             
             // Visual feedback
             const parent = element.parentElement;
@@ -1317,8 +1808,15 @@
         }
         
         function showMessage() {
-            // Save reader questions
+            // บังคับให้เลือกฟิคจาก dropdown
             const ficDropdown = document.getElementById('favoriteFicDropdown').value;
+            
+            if (!ficDropdown) {
+                alert('⚠️ กรุณาเลือกฟิคที่ชอบก่อนนะคะ\n\nเลือกจาก dropdown "-- เลือกฟิคที่ชอบ --" ด้านบนค่ะ');
+                return;
+            }
+            
+            // Save reader questions
             const ficReason = document.getElementById('question1').value.trim();
             answers.favoriteFic = ficDropdown ? `${ficDropdown}${ficReason ? ' - ' + ficReason : ''}` : ficReason;
             answers.wantFinished = document.getElementById('question2').value.trim();
@@ -1348,12 +1846,12 @@
             // Save message
             answers.messageToWriter = document.getElementById('messageToWriter').value.trim();
             
-            // Send all data to Google Sheets
+            // Set timestamp but DON'T send yet - wait for final vote
             answers.timestamp = new Date().toISOString();
-            sendToGoogleSheets();
             
+            // ข้ามหน้า final ไปหน้าดูฟิคเลย
             document.getElementById('messagePage').classList.add('hidden');
-            document.getElementById('finalPage').classList.remove('hidden');
+            document.getElementById('allFicsPage').classList.remove('hidden');
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
         
@@ -1367,11 +1865,13 @@
             document.getElementById('startBtn').disabled = true;
             
             // Reset steps
+            currentStep = 1;
             for (let i = 1; i <= 5; i++) {
                 document.getElementById('step' + i).querySelectorAll('.option').forEach(opt => {
                     opt.classList.remove('selected');
                 });
-                document.getElementById('next' + i).disabled = true;
+                const nextBtn = document.getElementById('next' + i);
+                if (nextBtn) nextBtn.disabled = true;
             }
             
             // Reset feedback
@@ -1392,17 +1892,22 @@
             // Reset message
             document.getElementById('messageToWriter').value = '';
             
-            // Reset pages
-            currentStep = 1;
+            // Reset ALL pages (hide everything first)
             document.getElementById('finalPage').classList.add('hidden');
             document.getElementById('questionsPage').classList.add('hidden');
             document.getElementById('ficPromoPage').classList.add('hidden');
             document.getElementById('messagePage').classList.add('hidden');
             document.getElementById('feedbackPage').classList.add('hidden');
             document.getElementById('resultPage').classList.add('hidden');
+            document.getElementById('characterRevealPage').classList.add('hidden');
             document.getElementById('loadingPage').classList.add('hidden');
             document.getElementById('quizPages').classList.add('hidden');
+            
+            // Show intro page
             document.getElementById('introPage').classList.remove('hidden');
+            
+            // Reset progress bar
+            updateProgress();
             
             // Reset loading
             document.getElementById('loadingBar').style.width = '0%';
@@ -1413,6 +1918,232 @@
             });
             
             window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+        
+        // ============================================
+        // 📖 NEW FUNCTIONS: All Fics & Voting
+        // ============================================
+        
+        function showAllFicsAndVotePage() {
+            document.getElementById('finalPage').classList.add('hidden');
+            document.getElementById('allFicsPage').classList.remove('hidden');
+            
+            // ตรวจสอบว่าโหวตไปแล้วหรือไม่
+            checkVoteStatus();
+            
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+        
+        function showFicModal(ficCode) {
+            const results = getHorseResults();
+            const ficContent = results[ficCode] || 'ไม่พบเนื้อหา';
+            
+            document.getElementById('ficModalContent').innerHTML = ficContent;
+            const modal = document.getElementById('ficModal');
+            modal.style.display = 'flex';
+        }
+        
+        function closeFicModal() {
+            const modal = document.getElementById('ficModal');
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking outside - setup after DOM loads
+        window.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('ficModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeFicModal();
+                    }
+                });
+            }
+            
+        });
+        
+        let selectedFinalVote = null;
+        let hasVotedInSession = false;
+        
+        function checkVoteStatus() {
+            console.log('checkVoteStatus called, hasVotedInSession:', hasVotedInSession);
+            
+            if (hasVotedInSession) {
+                // โหวตไปแล้ว - ปิดการโหวต
+                const dropdown = document.getElementById('voteDropdown');
+                const submitBtn = document.getElementById('submitVoteBtn');
+                
+                if (dropdown) {
+                    dropdown.disabled = true;
+                }
+                
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = '✅ โหวตสำเร็จแล้ว';
+                    submitBtn.style.opacity = '0.6';
+                    submitBtn.style.cursor = 'not-allowed';
+                }
+                
+                // แสดงข้อความว่าโหวตไปแล้ว
+                const voteSection = document.querySelector('#allFicsPage > div:last-child');
+                if (voteSection && !document.getElementById('alreadyVotedMessage')) {
+                    const message = document.createElement('div');
+                    message.id = 'alreadyVotedMessage';
+                    message.style.cssText = 'background: rgba(0, 217, 163, 0.2); border: 2px solid #00d9a3; border-radius: 10px; padding: 20px; margin-bottom: 20px; text-align: center;';
+                    message.innerHTML = `
+                        <div style="font-size: 1.2rem; color: #00d9a3; margin-bottom: 10px;">✅ โหวตสำเร็จแล้ว!</div>
+                        <div style="font-size: 0.95rem; color: #fff;">ขอบคุณที่ร่วมโหวตนะคะ 🐴✨</div>
+                        <div style="font-size: 0.85rem; color: #888; margin-top: 8px;">คุณสามารถดูตัวอย่างฟิคหรือเล่นใหม่ได้</div>
+                        <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+                            <button onclick="restartQuiz()" style="background: linear-gradient(135deg, #00d9a3, #0eb6e3); color: white; border: none; padding: 12px 30px; border-radius: 10px; font-size: 1rem; cursor: pointer; font-weight: 600;">
+                                🔄 เล่นใหม่
+                            </button>
+                            <button onclick="window.close()" style="background: linear-gradient(135deg, #888, #666); color: white; border: none; padding: 12px 30px; border-radius: 10px; font-size: 1rem; cursor: pointer; font-weight: 600;">
+                                ✖️ ปิด
+                            </button>
+                        </div>
+                    `;
+                    voteSection.insertBefore(message, voteSection.firstChild);
+                }
+            }
+        }
+        
+        function backToFinalPage() {
+            console.log('🔙 backToFinalPage called');
+            
+            try {
+                const allFicsPage = document.getElementById('allFicsPage');
+                const finalPage = document.getElementById('finalPage');
+                
+                if (allFicsPage) {
+                    allFicsPage.classList.add('hidden');
+                    console.log('✅ Hide allFicsPage');
+                }
+                
+                if (finalPage) {
+                    finalPage.classList.remove('hidden');
+                    console.log('✅ Show finalPage');
+                }
+                
+                window.scrollTo({top: 0, behavior: 'smooth'});
+                console.log('✅ Scrolled to top');
+                
+            } catch (error) {
+                console.error('❌ Error in backToFinalPage:', error);
+            }
+        }
+        
+        function restartQuiz() {
+            // รีโหลดหน้าเพื่อเริ่มใหม่ (รีเฟรชแล้วโหวตใหม่ได้เลย)
+            console.log('🔄 Restarting quiz...');
+            location.reload();
+        }
+        
+        function closeWindow() {
+            // พยายามปิดหน้าต่าง
+            console.log('✖️ Closing window...');
+            window.close();
+            // ถ้าปิดไม่ได้ (เปิดด้วย script ไม่ได้) ให้กลับไปหน้าแรก
+            if (!window.closed) {
+                window.location.href = 'about:blank';
+            }
+        }
+        
+        function selectVoteFromDropdown() {
+            const dropdown = document.getElementById('voteDropdown');
+            selectedFinalVote = dropdown.value;
+            console.log('Vote selected:', selectedFinalVote);
+            
+            // Update button text based on selection
+            const submitBtn = document.getElementById('submitVoteBtn');
+            if (selectedFinalVote) {
+                submitBtn.textContent = '🎯 ส่งโหวต (' + getVoteName(selectedFinalVote) + ')';
+                submitBtn.style.opacity = '1';
+            } else {
+                submitBtn.textContent = '🎯 ส่งโหวต';
+                submitBtn.style.opacity = '0.7';
+            }
+        }
+        
+        function getVoteName(voteCode) {
+            const voteNames = {
+                'A1': '🎓 วัยเรียน - โรแมนติก',
+                'A2': '🎓 วัยเรียน - ดราม่า',
+                'A3': '🎓 วัยเรียน - คอมเมดี้',
+                'A4': '🎓 วัยเรียน - เรียล',
+                'B1': '🧑‍💼 ออฟฟิศ - โรแมนติก',
+                'B2': '🧑‍💼 ออฟฟิศ - ดราม่า',
+                'B3': '🧑‍💼 ออฟฟิศ - คอมเมดี้',
+                'B4': '🧑‍💼 ออฟฟิศ - เรียล',
+                'E1': '✈️ ต่างประเทศ - โรแมนติก',
+                'E2': '✈️ ต่างประเทศ - ดราม่า',
+                'E3': '✈️ ต่างประเทศ - คอมเมดี้',
+                'E4': '✈️ ต่างประเทศ - เรียล',
+                'S1': '🦑 Squid Game - โรแมนติก',
+                'S2': '🦑 Squid Game - ดราม่า',
+                'S3': '🦑 Squid Game - คอมเมดี้',
+                'S4': '🦑 Squid Game - เรียล',
+                'NO_HORSE': '❌ ไม่เอาม้า'
+            };
+            return voteNames[voteCode] || voteCode;
+        }
+        
+        function submitFinalVote() {
+            console.log('🎯 submitFinalVote called');
+            console.log('Selected vote:', selectedFinalVote);
+            console.log('Has voted:', hasVotedInSession);
+            
+            try {
+                // ตรวจสอบว่าเลือกฟิคหรือยัง
+                if (!selectedFinalVote) {
+                    alert('⚠️ กรุณาเลือกฟิคที่ต้องการโหวตก่อนนะคะ');
+                    return;
+                }
+                
+                // ตรวจสอบว่าโหวตไปแล้วหรือไม่
+                if (hasVotedInSession) {
+                    alert('✅ คุณโหวตไปแล้วค่ะ!\n\nขอบคุณที่มีส่วนร่วม 🐴✨');
+                    return;
+                }
+                
+                console.log('Processing vote...');
+                
+                // Save vote to answers with readable name
+                answers.finalVote = getVoteName(selectedFinalVote);
+                answers.finalVoteCode = selectedFinalVote;
+                answers.voteTimestamp = new Date().toISOString();
+                
+                console.log('Vote data prepared:', answers.finalVote);
+                
+                // บันทึกว่าโหวตไปแล้วในเซสชันนี้
+                hasVotedInSession = true;
+                
+                // Update button to show voted status
+                const submitBtn = document.getElementById('submitVoteBtn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = '✅ โหวตสำเร็จแล้ว';
+                    submitBtn.style.opacity = '0.6';
+                }
+                
+                // Update UI
+                checkVoteStatus();
+                
+                // ส่งไป Google Sheets เบื้องหลัง (ไม่รอ)
+                sendToGoogleSheets().catch(err => {
+                    console.error('❌ Vote send error:', err);
+                });
+                
+                console.log('Showing success message...');
+                
+                // Show success message
+                alert('🎉 โหวตสำเร็จ!\n\nขอบคุณที่ร่วมโหวตนะคะ 🐴✨\n\nคุณสามารถดูตัวอย่างฟิคหรือเล่นใหม่ได้เลย');
+                
+                console.log('✅ Vote completed!');
+                
+            } catch (error) {
+                console.error('❌ Error in submitFinalVote:', error);
+                alert('❌ เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+            }
         }
     </script>
 </body>
