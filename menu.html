@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐴 Buddy Fic - เมนูหลัก</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 1000px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header-icon {
+            font-size: 6rem;
+            margin-bottom: 20px;
+            animation: floatBounce 3s ease-in-out infinite;
+        }
+        
+        @keyframes floatBounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #ff2e63 0%, #0eb6e3 50%, #00d9a3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            animation: fadeInDown 1s;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #0eb6e3;
+            font-size: 1.3rem;
+            margin-bottom: 60px;
+            animation: fadeIn 1.5s;
+            font-weight: 600;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+        
+        .menu-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+            border: 2px solid rgba(14, 182, 227, 0.3);
+            border-radius: 25px;
+            padding: 50px 30px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .menu-card:hover {
+            transform: translateY(-10px);
+            border-color: #0eb6e3;
+            box-shadow: 0 15px 40px rgba(14, 182, 227, 0.4);
+        }
+        
+        .menu-card:nth-child(1):hover {
+            border-color: #00d9a3;
+            box-shadow: 0 20px 60px rgba(0, 217, 163, 0.5);
+        }
+        
+        .menu-card:nth-child(2):hover {
+            border-color: #ff2e63;
+            box-shadow: 0 20px 60px rgba(255, 46, 99, 0.5);
+        }
+        
+        .menu-icon {
+            font-size: 5rem;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .menu-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .menu-card:nth-child(1) .menu-title {
+            background: linear-gradient(135deg, #00d9a3, #0eb6e3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .menu-card:nth-child(2) .menu-title {
+            background: linear-gradient(135deg, #ff2e63, #FFB74D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .menu-desc {
+            color: #ccc;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInDown {
+            from { 
+                opacity: 0; 
+                transform: translateY(-30px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        footer {
+            margin-top: 80px;
+            color: #888;
+            font-size: 1rem;
+            animation: fadeIn 2s;
+        }
+        
+        footer p:first-child {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0eb6e3;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .menu-card {
+                padding: 40px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-icon">🐴🦄🐎</div>
+        <h1>🐴 Fic Interpretation System Quiz 🎉</h1>
+        <p class="subtitle">by cattowriter 💙</p>
+        
+        <div class="menu-grid">
+            <a href="index.html" class="menu-card">
+                <div class="menu-icon">📝</div>
+                <div class="menu-title">ทำแบบทดสอบ 🐴</div>
+                <p class="menu-desc">ทำแบบทดสอบเพื่อหารสนิยมฟิคที่คุณชอบ และบอกความต้องการของคุณ ✨</p>
+            </a>
+            
+            <a href="buddy-fic-dashboard-v2.html" class="menu-card">
+                <div class="menu-icon">📊</div>
+                <div class="menu-title">ดูผลสรุป 🦄</div>
+                <p class="menu-desc">ดูสถิติและผลสรุปจากคนที่ทำแบบทดสอบทั้งหมด 💙</p>
+            </a>
+        </div>
+        
+        <footer>
+            <p>🐴 ระบบตีความรสนิยมฟิค 🦄</p>
+            <p style="margin-top: 10px;">ขอบคุณทุกคนที่เข้าร่วม!</p>
+        </footer>
+    </div>
+</body>
+</html>

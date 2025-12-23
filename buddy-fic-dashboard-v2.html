@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Fic Interpretation System - Summary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 1s;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #ff2e63 0%, #0eb6e3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #888;
+            font-size: 1.2rem;
+        }
+        
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(14, 182, 227, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+            animation: slideUp 0.6s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #0eb6e3;
+            box-shadow: 0 10px 30px rgba(14, 182, 227, 0.3);
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d9a3, #0eb6e3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: #888;
+            margin-top: 10px;
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(14, 182, 227, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            animation: fadeIn 1s;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #ff2e63, #0eb6e3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
+        }
+        
+        .chart-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 46, 99, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            height: 400px;
+            transition: all 0.3s;
+        }
+        
+        .chart-container:hover {
+            border-color: rgba(255, 46, 99, 0.5);
+            box-shadow: 0 5px 20px rgba(255, 46, 99, 0.2);
+        }
+        
+        .chart-title {
+            font-size: 1.3rem;
+            color: #0eb6e3;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .vote-results {
+            display: grid;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .vote-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .vote-item:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #FFD700;
+            transform: translateX(10px);
+        }
+        
+        .vote-item:nth-child(1) {
+            border-color: #FFD700;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05));
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .vote-item:nth-child(2) {
+            border-color: #C0C0C0;
+        }
+        
+        .vote-item:nth-child(3) {
+            border-color: #CD7F32;
+        }
+        
+        .vote-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .vote-count {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Word Cloud Container */
+        #wordcloud-container, #plotcloud-container {
+            width: 100%;
+            min-height: 600px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(14, 182, 227, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .word-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(14, 182, 227, 0.3);
+            border-radius: 20px;
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .word-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .word-item:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .word-item:hover {
+            transform: scale(1.3) rotate(-3deg);
+            border-color: currentColor;
+            box-shadow: 0 10px 40px rgba(14, 182, 227, 0.6);
+            z-index: 100;
+        }
+        
+        .word-item:active {
+            transform: scale(1.4) rotate(5deg);
+            animation: bounce 0.5s;
+        }
+        
+        .word-text {
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        .word-count {
+            background: linear-gradient(135deg, #00d9a3, #0eb6e3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1.4) rotate(5deg); }
+            50% { transform: scale(1.5) rotate(-5deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 350px;
+            }
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            border-top: 2px solid rgba(14, 182, 227, 0.3);
+            color: #888;
+        }
+        
+        .horse-emoji {
+            font-size: 2rem;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .character-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: #0eb6e3 !important;
+            box-shadow: 0 15px 50px rgba(14, 182, 227, 0.5);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            margin: 5% auto;
+            padding: 40px;
+            border: 2px solid #0eb6e3;
+            border-radius: 20px;
+            width: 80%;
+            max-width: 700px;
+            box-shadow: 0 20px 60px rgba(14, 182, 227, 0.4);
+            animation: slideUp 0.4s;
+            position: relative;
+        }
+        
+        .close-modal {
+            color: #888;
+            float: right;
+            font-size: 2.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            line-height: 1;
+            margin-top: -10px;
+        }
+        
+        .close-modal:hover {
+            color: #00d9a3;
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="font-size: 5rem; margin-bottom: 15px; animation: bounce 2s infinite;">
+                🐴 🦄 🐎
+            </div>
+            <h1>🐴 สรุปผล Fic Interpretation System 🎉</h1>
+            <p class="subtitle">ระบบทำนายว่าคุณน่าจะเหมาะกับฟิคแบบไหนที่สุด by cattowriter 🐱</p>
+        </header>
+        
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-number" id="totalPlayers">0</div>
+                <div class="stat-label">👥 คนเล่นม้าทั้งหมด</div>
+            </div>
+            <div class="stat-card" style="grid-column: span 2;">
+                <div class="stat-label" style="margin-bottom: 15px;">🐴 คุณชอบฟิคที่ระบบทำนายไหม?</div>
+                <div style="height: 200px;">
+                    <canvas id="horsePreferenceChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 🏆 โหวตฟิคสุดท้าย - Leaderboard -->
+        <section class="section">
+            <h2 class="section-title">🏆 ฟิคที่คนโหวตมากที่สุด</h2>
+            <p style="text-align: center; color: #888; margin-bottom: 20px;">
+                💡 กดคลิกเพื่ออ่านพล็อตฟิคกาวทั้ง 16 แบบ
+            </p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                <div id="voteLeaderboard" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <!-- Leaderboard items will be inserted here -->
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+                    <!-- สรุปผลโหวต -->
+                    <div style="background: linear-gradient(135deg, rgba(14, 182, 227, 0.1), rgba(0, 217, 163, 0.05)); 
+                                border: 2px solid rgba(14, 182, 227, 0.4); 
+                                border-radius: 15px; padding: 25px;
+                                box-shadow: 0 10px 40px rgba(14, 182, 227, 0.2);">
+                        <h3 style="color: #0eb6e3; margin-bottom: 25px; font-size: 1.4rem; text-align: center; 
+                                   text-shadow: 0 2px 10px rgba(14, 182, 227, 0.5);">📈 สรุปผลโหวต</h3>
+                        <div style="color: #fff; display: flex; flex-direction: column; gap: 20px;">
+                            <!-- ฟิคที่ได้โหวตสูงสุด -->
+                            <div style="background: rgba(255, 215, 0, 0.1); border-left: 4px solid #FFD700; 
+                                        padding: 15px; border-radius: 10px;">
+                                <p style="font-size: 0.95rem; color: #FFD700; font-weight: 600; margin-bottom: 8px;">
+                                    ✨ ฟิคที่ได้โหวตมากที่สุด
+                                </p>
+                                <p style="font-size: 1.3rem; color: #fff; font-weight: 700;" id="topVoteText">-</p>
+                            </div>
+                            
+                            <!-- ฟิคที่บัดดี้เลือก -->
+                            <div style="background: rgba(0, 217, 163, 0.1); border-left: 4px solid #00d9a3; 
+                                        padding: 15px; border-radius: 10px;">
+                                <p style="font-size: 0.95rem; color: #00d9a3; font-weight: 600; margin-bottom: 8px;">
+                                    🐴 ฟิคที่บัดดี้เลือก
+                                </p>
+                                <p style="font-size: 1.3rem; color: #fff; font-weight: 700;">🎓 วัยเรียน + คอมเมดี้</p>
+                            </div>
+                            
+                            <!-- ฟิคที่ Cattowriter ชอบแต่คนไม่เลือก -->
+                            <div style="background: rgba(14, 182, 227, 0.1); border-left: 4px solid #0eb6e3; 
+                                        padding: 15px; border-radius: 10px;">
+                                <p style="font-size: 0.95rem; color: #0eb6e3; font-weight: 600; margin-bottom: 8px;">
+                                    💙 ฟิคที่ Cattowriter🐱 ชอบแต่คนไม่เลือก
+                                </p>
+                                <p style="font-size: 1.3rem; color: #fff; font-weight: 700;">🧑‍💼 ออฟฟิศ + คอมเมดี้</p>
+                            </div>
+                            
+                            <!-- สถิติอื่นๆ -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div style="background: rgba(14, 182, 227, 0.15); border: 1px solid rgba(14, 182, 227, 0.3); 
+                                            padding: 15px; border-radius: 10px; text-align: center;">
+                                    <p style="font-size: 0.9rem; color: #0eb6e3; margin-bottom: 5px;">📊 จำนวนฟิค</p>
+                                    <p style="font-size: 1.8rem; color: #00d9a3; font-weight: 700;" id="totalVotedFics">-</p>
+                                </div>
+                                <div style="background: rgba(255, 46, 99, 0.15); border: 1px solid rgba(255, 46, 99, 0.3); 
+                                            padding: 15px; border-radius: 10px; text-align: center;">
+                                    <p style="font-size: 0.9rem; color: #ff2e63; margin-bottom: 5px;">🎯 จำนวนโหวต</p>
+                                    <p style="font-size: 1.8rem; color: #00d9a3; font-weight: 700;" id="totalVotes">-</p>
+                                </div>
+                            </div>
+                            
+
+                        </div>
+                    </div>
+                    
+                    <!-- ฟิคบัดดี้ -->
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 2px solid rgba(0, 217, 163, 0.3); 
+                                border-radius: 15px; padding: 25px; text-align: center;">
+                        <h3 style="color: #00d9a3; margin-bottom: 15px; font-size: 1.3rem;">🐴 Fic Tribute to my Buddy 🦄</h3>
+                        <p style="color: #0eb6e3; margin-bottom: 15px; font-size: 1.05rem;">
+                            🎄🐎 #ซีเครทซานตี้ฮี่กับกับ
+                        </p>
+                        <p style="color: #fff; margin-bottom: 20px; line-height: 1.8;">
+                            บัดดี้โหวตเลือก 'ฟิคม้าแบบ 🎓 วัยเรียน - คอมเมดี้'
+                        </p>
+                        <a href="https://www.readawrite.com/c/c50a63812cd1f1477ba1c314680f5260" target="_blank" 
+                           style="display: inline-block; text-decoration: none; transition: all 0.3s;">
+                            <img src="file:///Users/orapin/Downloads/horsefic_system/images/horses.jpg" alt="Love in the Stable Class" 
+                                 style="max-width: 100%; border-radius: 15px; 
+                                        border: 3px solid #0eb6e3; box-shadow: 0 10px 30px rgba(14, 182, 227, 0.4);
+                                        transition: all 0.3s;">
+                        </a>
+                        <div style="margin-top: 20px;">
+                            <a href="https://www.readawrite.com/c/c50a63812cd1f1477ba1c314680f5260" target="_blank"
+                               style="display: inline-block; background: linear-gradient(135deg, #00d9a3, #0eb6e3);
+                                      color: white; padding: 15px 40px; border-radius: 15px; font-size: 1.1rem;
+                                      font-weight: 700; text-decoration: none; transition: all 0.3s;
+                                      box-shadow: 0 5px 20px rgba(0, 217, 163, 0.4);">
+                                🎓🐴 อ่านเลย!
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        
+        <!-- Charts Section 1 -->
+        <section class="section">
+            <h2 class="section-title">📊 สถิติความชอบ</h2>
+            <div class="chart-grid">
+                <div>
+                    <div class="chart-title">คุณอยากได้โทนแบบไหน?</div>
+                    <div class="chart-container">
+                        <canvas id="toneChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <div class="chart-title">บรรยากาศหลักที่คุณชอบ?</div>
+                    <div class="chart-container">
+                        <canvas id="sceneChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- ตัวละครที่คุณได้รับ -->
+        <section class="section">
+            <h2 class="section-title">🎭 ตัวละครที่คุณได้รับ</h2>
+            <p style="text-align: center; color: #888; margin-bottom: 20px;">
+                💡 คลิกที่ card เพื่ออ่านข้อมูลเพิ่มเติม
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 30px;">
+                <!-- กีฮุน -->
+                <div class="character-card" onclick="showCharacterDetails('gihun')" 
+                     style="text-align: center; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(14, 182, 227, 0.3); 
+                            border-radius: 15px; padding: 30px; transition: all 0.3s; cursor: pointer;">
+                    <img src="file:///Users/orapin/Downloads/horsefic_system/images/gihun.jpg" alt="กีฮุน" 
+                         style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; 
+                                border: 5px solid #00d9a3; box-shadow: 0 10px 30px rgba(0, 217, 163, 0.3);">
+                    <h3 style="color: #00d9a3; margin-top: 20px; font-size: 1.5rem;">🏆 🦄 กีฮุน</h3>
+                    <p style="color: #888; margin-top: 10px; line-height: 1.8;">
+                        คนสวยขา ขี้วีน ใจอ่อน<br>
+                        รักสัตว์ รักม้า 🐴
+                    </p>
+                    <div style="margin-top: 15px; font-size: 1.3rem; color: #0eb6e3; font-weight: 700;">
+                        58 คน
+                    </div>
+                </div>
+                
+                <!-- อินโฮ หมาเด็ก -->
+                <div class="character-card" onclick="showCharacterDetails('inho_soft')"
+                     style="text-align: center; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(14, 182, 227, 0.3); 
+                            border-radius: 15px; padding: 30px; transition: all 0.3s; cursor: pointer;">
+                    <img src="file:///Users/orapin/Downloads/horsefic_system/images/inho_soft.jpg" alt="อินโฮ หมาเด็ก" 
+                         style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; 
+                                border: 5px solid #0eb6e3; box-shadow: 0 10px 30px rgba(14, 182, 227, 0.3);">
+                    <h3 style="color: #0eb6e3; margin-top: 20px; font-size: 1.5rem;">🐶 อินโฮ หมาเด็ก</h3>
+                    <p style="color: #888; margin-top: 10px; line-height: 1.8;">
+                        ขี้อ้อน คุณกีฮุนครับๆๆๆ<br>
+                        ผมอยากขี่ม้า 🐴 พาผมไปหน่อย
+                    </p>
+                    <div style="margin-top: 15px; font-size: 1.3rem; color: #0eb6e3; font-weight: 700;">
+                        19 คน
+                    </div>
+                </div>
+                
+                <!-- อินโฮ พี่เสือ -->
+                <div class="character-card" onclick="showCharacterDetails('inho_control')"
+                     style="text-align: center; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(14, 182, 227, 0.3); 
+                            border-radius: 15px; padding: 30px; transition: all 0.3s; cursor: pointer;">
+                    <img src="file:///Users/orapin/Downloads/horsefic_system/images/inho_control.jpg" alt="อินโฮ พี่เสือ" 
+                         style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; 
+                                border: 5px solid #ff2e63; box-shadow: 0 10px 30px rgba(255, 46, 99, 0.3);">
+                    <h3 style="color: #ff2e63; margin-top: 20px; font-size: 1.5rem;">🐯 อินโฮ พี่เสือ</h3>
+                    <p style="color: #888; margin-top: 10px; line-height: 1.8;">
+                        ขี้เก็ก จีบไม่ดูเวลา<br>
+                        ระวังพี่เสือหลอกไปเล่นกันในคอกม้า 🐴🔥
+                    </p>
+                    <div style="margin-top: 15px; font-size: 1.3rem; color: #ff2e63; font-weight: 700;">
+                        16 คน
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Modal สำหรับแสดงรายละเอียดตัวละคร -->
+        <div id="characterModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+                <div id="modalCharacterContent"></div>
+            </div>
+        </div>
+        
+        <!-- Modal สำหรับแสดงพล็อตฟิค -->
+        <div id="ficModal" class="modal">
+            <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+                <span class="close-modal" onclick="closeFicModal()">&times;</span>
+                <div id="ficModalContent" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+        
+        <!-- Charts Section 2 -->
+        <section class="section">
+            <div class="chart-grid">
+                <div>
+                    <div class="chart-title">อยากให้ฟิคจบแบบไหน?</div>
+                    <div class="chart-container">
+                        <canvas id="endingChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <div class="chart-title">คุณรู้สึกยังไงกับผลลัพธ์?</div>
+                    <div class="chart-container">
+                        <canvas id="feelingChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Charts Section 3 -->
+        <section class="section">
+            <h2 class="section-title">📊 คุณอยากให้ต่ออะไรมากสุด?</h2>
+            <div class="chart-grid">
+                <div>
+                    <div class="chart-title">1️⃣ ชอบฟิคเรื่องไหนมากที่สุด</div>
+                    <div class="chart-container">
+                        <canvas id="favoriteFicChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <div class="chart-title">2️⃣ อยากให้แต่งเรื่องไหนให้จบ</div>
+                    <div class="chart-container">
+                        <canvas id="finishRequestChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Word Cloud - Plot Donations -->
+        <section class="section">
+            <h2 class="section-title">💖 ฟิคที่ชอบที่สุด</h2>
+            <p style="text-align: center; color: #888; margin-bottom: 20px;">
+                💡 วางเมาส์เหนือคำเพื่อดูจำนวน | 
+                ✨ <strong style="color: #00d9a3;">คลิกคำ</strong>เพื่อดู effect พิเศษ!
+            </p>
+            <div id="plotcloud-container"></div>
+        </section>
+        
+        <!-- Word Cloud - Interactive -->
+        <section class="section">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="font-size: 5rem; margin-bottom: 15px; animation: bounce 2s infinite;">
+                    🐴 🦄 🐎
+                </div>
+            </div>
+            <h2 class="section-title">💬 ข้อความถึง cattowriter 🐱</h2>
+            <p style="text-align: center; color: #888; margin-bottom: 20px;">
+                💡 วางเมาส์เหนือคำเพื่อดูจำนวน | 
+                ✨ <strong style="color: #00d9a3;">คลิกคำ</strong>เพื่อดู effect พิเศษ!
+            </p>
+            <div id="wordcloud-container"></div>
+        </section>
+        
+        <!-- Fic Promotion Section -->
+        <section class="section">
+            <h2 class="section-title">💖 ฝากฟิคกดเลิฟ เพิ่มเข้าชั้น</h2>
+            <p style="text-align: center; color: #888; margin-bottom: 30px;">
+                อ่านเป็นกำลังใจหน่อยนะคับ อิอิ
+            </p>
+            
+            <!-- Fic Grid with Images - 2 Columns -->
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px;">
+                
+                <!-- รู้กันแค่นี้ -->
+                <a href="https://www.readawrite.com/a/5a4bba747a085a15251dfa9fd0efaf36" target="_blank" 
+                   style="text-decoration: none; display: flex; flex-direction: column; background: rgba(0, 217, 163, 0.1); 
+                          border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 10px; 
+                          transition: all 0.3s; color: #fff;">
+                    <img src="file:///Users/orapin/Downloads/horsefic_system/images/rugun.jpg" alt="รู้กันแค่นี้" 
+                         style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+                    <h4 style="color: #00d9a3; margin-bottom: 5px;">รู้กันแค่นี้</h4>
+                    <p style="font-size: 0.9rem; color: #ccc;">🎓 วัยเรียน | คอมเมดี้ | แฮปปี้เอนดิ้ง</p>
+                </a>
+                
+                <!-- เราไม่ใช่ม้าแข่ง -->
+                <a href="https://www.readawrite.com/c/c50a63812cd1f1477ba1c314680f5260" target="_blank" 
+                   style="text-decoration: none; display: flex; flex-direction: column; background: rgba(14, 182, 227, 0.1); 
+                          border: 2px solid rgba(14, 182, 227, 0.3); border-radius: 10px; padding: 10px; 
+                          transition: all 0.3s; color: #fff;">
+                    <img src="file:///Users/orapin/Downloads/horsefic_system/images/horses.jpg" alt="เราไม่ใช่ม้าแข่ง" 
+                         style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+                    <h4 style="color: #0eb6e3; margin-bottom: 5px;">เราไม่ใช่ม้าแข่ง 🐴</h4>
+                    <p style="font-size: 0.9rem; color: #ccc;">🎓 วัยเรียน | คอมเมดี้ | แฮปปี้เอนดิ้ง</p>
+                </a>
+                
+                <!-- In Other Words -->
+                <a href="https://www.readawrite.com/a/e0eb11c83c5a8f5e5d4b84d3c6aa89d3" target="_blank" 
+                   style="text-decoration: none; display: flex; flex-direction: column; background: rgba(0, 217, 163, 0.1); 
+                          border: 2px solid rgba(0, 217, 163, 0.3); border-radius: 10px; padding: 10px; 
+                          transition: all 0.3s; color: #fff;">
+                    <img src="file:///Users/orapin/Downloads/horsefic_system/images/inotherwords.jpg" alt="In Other Words" 
+                         style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+                    <h4 style="color: #00d9a3; margin-bottom: 5px;">In Other Words</h4>
+                    <p style="font-size: 0.9rem; color: #ccc;">👥 ออฟฟิศ | ดราม่า | แฮปปี้เอนดิ้ง</p>
+                </a>
+                
+                <!-- Redlight Means Go -->
+                <a href="https://www.readawrite.com/a/2f8f6e7b7b4f7a2b8c1d9e4f3a5b6c7d" target="_blank" 
+                   style="text-decoration: none; display: flex; flex-direction: column; background: rgba(255, 46, 99, 0.1); 
+                          border: 2px solid rgba(255, 46, 99, 0.3); border-radius: 10px; padding: 10px; 
+                          transition: all 0.3s; color: #fff;">
+                    <img src="file:///Users/orapin/Downloads/horsefic_system/images/redlight.jpg" alt="Redlight Means Go" 
+                         style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+                    <h4 style="color: #ff2e63; margin-bottom: 5px;">Redlight Means Go</h4>
+                    <p style="font-size: 0.9rem; color: #ccc;">🦑 Squid Game | ดราม่า | แฮปปี้เอนดิ้ง</p>
+                </a>
+                
+                <!-- The Last Case -->
+                <a href="https://www.readawrite.com/a/1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p" target="_blank" 
+                   style="text-decoration: none; display: flex; flex-direction: column; background: rgba(255, 183, 77, 0.1); 
+                          border: 2px solid rgba(255, 183, 77, 0.3); border-radius: 10px; padding: 10px; 
+                          transition: all 0.3s; color: #fff;">
+                    <img src="file:///Users/orapin/Downloads/horsefic_system/images/lastcase.jpg" alt="The Last Case" 
+                         style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+                    <h4 style="color: #FFB74D; margin-bottom: 5px;">The Last Case</h4>
+                    <p style="font-size: 0.9rem; color: #ccc;">✈️ ต่างประเทศ | ดราม่า | แฮปปี้เอนดิ้ง</p>
+                </a>
+                
+                <!-- Interview -->
+                <a href="https://www.readawrite.com/a/a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6" target="_blank" 
+                   style="text-decoration: none; display: flex; flex-direction: column; background: rgba(14, 182, 227, 0.1); 
+                          border: 2px solid rgba(14, 182, 227, 0.3); border-radius: 10px; padding: 10px; 
+                          transition: all 0.3s; color: #fff;">
+                    <img src="file:///Users/orapin/Downloads/horsefic_system/images/interview.jpg" alt="Interview" 
+                         style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+                    <h4 style="color: #0eb6e3; margin-bottom: 5px;">Interview</h4>
+                    <p style="font-size: 0.9rem; color: #ccc;">👥 ออฟฟิศ | คอมเมดี้ | แฮปปี้เอนดิ้ง</p>
+                </a>
+            </div>
+        </section>
+        
+        <footer>
+            <p class="horse-emoji">🐴🦄🐎</p>
+            <p style="margin-top: 15px;">ขอบคุณทุกคนที่เข้าร่วม Fic Interpretation System</p>
+            <p style="margin-top: 10px; color: #0eb6e3;">by cattowriter 💙</p>
+        </footer>
+    </div>
+    
+    <script>
+        // ข้อมูล
+        const stats = {
+            total: 93,
+            final_votes: {
+                "🧑‍💼 ออฟฟิศ - ดราม่า": 7,
+                "🦑 Squid Game - เรียล": 3,
+                "🧑‍💼 ออฟฟิศ - โรแมนติก": 3,
+                "✈️ ต่างประเทศ - โรแมนติก": 3,
+                "🎓 วัยเรียน - คอมเมดี้": 2,
+                "🧑‍💼 ออฟฟิศ - คอมเมดี้": 2,
+                "✈️ ต่างประเทศ - ดราม่า": 2,
+                "✈️ ต่างประเทศ - คอมเมดี้": 2,
+                "🦑 Squid Game - คอมเมดี้": 2,
+                "🎓 วัยเรียน - โรแมนติก": 1,
+                "🦑 Squid Game - ดราม่า": 1,
+                "🦑 Squid Game - โรแมนติก": 1,
+                "✈️ ต่างประเทศ - เรียล": 1,
+                "🧑‍💼 ออฟฟิศ - เรียล": 1,
+                "🎓 วัยเรียน - ดราม่า": 1,
+                "🎓 วัยเรียน - เรียล": 1
+            },
+            tones: {
+                "คอมเมดี้เบาสมอง": 32,
+                "โรแมนติกอบอุ่น อ่านแล้วใจฟู": 25,
+                "ดราม่าหนัก บีบหัวใจ": 20,
+                "ชีวิตเรียล ๆ สมจริง": 16
+            },
+            scenes: {
+                "ออฟฟิศ": 44,
+                "Squid Game 🦑": 32,
+                "ต่างประเทศ": 12,
+                "วัยเรียน": 5
+            },
+            endings: {
+                "แฮปปี้เอนดิ้ง": 45,
+                "ดราม่าขม ๆ แต่สวย": 27,
+                "กาว ถอดสมอง ปั่น": 17,
+                "ขอแค่มีม้าก็พอ": 4
+            },
+            feelings: {
+                "อยากได้ฟิคนี้แหละ! ✅": 28,
+                "ไม่ใช่ว้อย! ไม่เอาม้า 👎🐴❌": 5
+            },
+            characters: {
+                "กีฮุน": 58,
+                "อินโฮ หมาเด็ก": 19,
+                "อินโฮ พี่เสือ": 16
+            },
+            favorite_fics: {
+                "เราไม่ใช่ม้าแข่ง 🐴": 35,
+                "Redlight Means Go": 22,
+                "In Other Words": 18,
+                "รู้กันแค่นี้": 12,
+                "The Last Case": 8,
+                "ยังไม่ได้อ่าน": 5
+            },
+            finish_requests: {
+                "เราไม่ใช่ม้าแข่ง 🐴": 28,
+                "Redlight Means Go": 25,
+                "In Other Words": 20,
+                "รู้กันแค่นี้": 15,
+                "The Last Case": 10,
+                "อื่นๆ / ไม่มี": 8
+            }
+        };
+        
+        // แสดงจำนวนคนเล่น
+        document.getElementById('totalPlayers').textContent = stats.total;
+        
+        // Chart defaults
+        Chart.defaults.color = '#fff';
+        Chart.defaults.font.family = 'Kanit';
+        Chart.defaults.font.size = 13;
+        
+        // Horse Preference Chart (Doughnut)
+        new Chart(document.getElementById('horsePreferenceChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(stats.feelings),
+                datasets: [{
+                    data: Object.values(stats.feelings),
+                    backgroundColor: ['#00d9a3', '#ff2e63'],
+                    borderWidth: 3,
+                    borderColor: '#1a1a2e'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            padding: 10,
+                            font: {
+                                size: 12
+                            },
+                            color: '#fff'
+                        }
+                    }
+                }
+            }
+        });
+        
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        };
+        
+        // สีตามธีมเดิม
+        const colors = {
+            gradient: ['#ff2e63', '#0eb6e3', '#00d9a3', '#FFB74D'],
+            primary: '#ff2e63',
+            secondary: '#0eb6e3',
+            accent: '#00d9a3'
+        };
+        
+        // Leaderboard โหวตฟิค - แบบรายชื่อ
+        const sortedVotes = Object.entries(stats.final_votes)
+            .sort((a, b) => b[1] - a[1]); // เรียงจากมากไปน้อย
+        
+        // สรุปผล
+        document.getElementById('topVoteText').textContent = `${sortedVotes[0][0]} (${sortedVotes[0][1]} คน)`;
+        document.getElementById('totalVotedFics').textContent = '16 ฟิค';
+        document.getElementById('totalVotes').textContent = `${Object.values(stats.final_votes).reduce((a, b) => a + b, 0)} โหวต`;
+        
+        // สร้าง Leaderboard
+        const leaderboard = document.getElementById('voteLeaderboard');
+        
+        // ฟังก์ชันหาสีตาม theme
+        function getColorByTheme(name) {
+            if (name.includes('🎓') || name.includes('วัยเรียน')) return '#00d9a3'; // เขียว
+            if (name.includes('🧑‍💼') || name.includes('ออฟฟิศ')) return '#0eb6e3'; // ฟ้า
+            if (name.includes('✈️') || name.includes('ต่างประเทศ')) return '#FFB74D'; // ส้ม
+            if (name.includes('🦑') || name.includes('Squid Game')) return '#ff2e63'; // แดง
+            return '#888'; // default
+        }
+        
+        sortedVotes.forEach((vote, index) => {
+            const [name, count] = vote;
+            const color = getColorByTheme(name);
+            const total = Object.values(stats.final_votes).reduce((a, b) => a + b, 0);
+            const percentage = ((count / total) * 100).toFixed(1);
+            
+            // Medal for top 3
+            let medal = '';
+            if (index === 0) medal = '🥇';
+            else if (index === 1) medal = '🥈';
+            else if (index === 2) medal = '🥉';
+            else medal = `${index + 1}.`;
+            
+            const item = document.createElement('div');
+            // Map vote name to fic code
+            const ficCodeMap = {
+                '🎓 วัยเรียน - โรแมนติก': 'A1',
+                '🎓 วัยเรียน - ดราม่า': 'A2',
+                '🎓 วัยเรียน - คอมเมดี้': 'A3',
+                '🎓 วัยเรียน - เรียล': 'A4',
+                '🧑‍💼 ออฟฟิศ - โรแมนติก': 'B1',
+                '🧑‍💼 ออฟฟิศ - ดราม่า': 'B2',
+                '🧑‍💼 ออฟฟิศ - คอมเมดี้': 'B3',
+                '🧑‍💼 ออฟฟิศ - เรียล': 'B4',
+                '✈️ ต่างประเทศ - โรแมนติก': 'E1',
+                '✈️ ต่างประเทศ - ดราม่า': 'E2',
+                '✈️ ต่างประเทศ - คอมเมดี้': 'E3',
+                '✈️ ต่างประเทศ - เรียล': 'E4',
+                '🦑 Squid Game - โรแมนติก': 'S1',
+                '🦑 Squid Game - ดราม่า': 'S2',
+                '🦑 Squid Game - คอมเมดี้': 'S3',
+                '🦑 Squid Game - เรียล': 'S4'
+            };
+            
+            const ficCode = ficCodeMap[name];
+            
+            item.style.cssText = `
+                background: rgba(255, 255, 255, 0.05);
+                border: 2px solid ${color};
+                border-radius: 15px;
+                padding: 15px 25px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                transition: all 0.3s;
+                cursor: pointer;
+            `;
+            
+            // Add click to show fic plot
+            item.onclick = function() {
+                if (ficCode) showFicModal(ficCode);
+            };
+            
+            // Extra styling for top 3
+            if (index < 3) {
+                item.style.background = `linear-gradient(135deg, ${color}22, ${color}11)`;
+                item.style.boxShadow = `0 5px 20px ${color}55`;
+            }
+            
+            item.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                    <span style="font-size: 1.5rem; min-width: 40px; text-align: center;">${medal}</span>
+                    <span style="color: #fff; font-size: 1.1rem; font-weight: 600;">${name}</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="text-align: right;">
+                        <div style="color: ${color}; font-size: 1.5rem; font-weight: 700;">${count}</div>
+                        <div style="color: ${color}; font-size: 0.85rem; opacity: 0.7;">${percentage}%</div>
+                    </div>
+                </div>
+            `;
+            
+            // Hover effect
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(10px) scale(1.02)';
+                this.style.borderColor = color;
+                this.style.boxShadow = `0 8px 30px ${color}88`;
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0) scale(1)';
+                if (index < 3) {
+                    this.style.boxShadow = `0 5px 20px ${color}55`;
+                } else {
+                    this.style.boxShadow = 'none';
+                }
+            });
+            
+            leaderboard.appendChild(item);
+        });
+        
+        // Chart 1: โทนฟิค
+        new Chart(document.getElementById('toneChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(stats.tones),
+                datasets: [{
+                    data: Object.values(stats.tones),
+                    backgroundColor: colors.gradient,
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                ...chartOptions,
+                indexAxis: 'y'
+            }
+        });
+        
+        // Chart 2: ฉาก
+        new Chart(document.getElementById('sceneChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(stats.scenes),
+                datasets: [{
+                    data: Object.values(stats.scenes),
+                    backgroundColor: colors.gradient,
+                    borderWidth: 2,
+                    borderColor: '#1a1a2e'
+                }]
+            },
+            options: {
+                ...chartOptions,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Chart 3: ตอนจบ
+        new Chart(document.getElementById('endingChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(stats.endings),
+                datasets: [{
+                    data: Object.values(stats.endings),
+                    backgroundColor: colors.gradient,
+                    borderRadius: 10
+                }]
+            },
+            options: chartOptions
+        });
+        
+        // Chart 4: ความรู้สึก
+        new Chart(document.getElementById('feelingChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(stats.feelings),
+                datasets: [{
+                    data: Object.values(stats.feelings),
+                    backgroundColor: ['#00d9a3', '#ff2e63'],
+                    borderWidth: 2,
+                    borderColor: '#1a1a2e'
+                }]
+            },
+            options: {
+                ...chartOptions,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Chart 6: ฟิคที่ชอบมากสุด
+        const favoriteFicColors = [
+            '#ff2e63',  // Redlight = แดง
+            '#0eb6e3',  // ฟ้า
+            '#00d9a3',  // เขียว
+            '#FFD700',  // เหลือง
+            '#FF6B9D',  // ชมพู
+            '#888'      // เทา
+        ];
+        
+        new Chart(document.getElementById('favoriteFicChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(stats.favorite_fics),
+                datasets: [{
+                    data: Object.values(stats.favorite_fics),
+                    backgroundColor: favoriteFicColors,
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                ...chartOptions,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#fff'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#fff',
+                            font: {
+                                size: 13
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Chart 7: ฟิคทเอยากให้จบ
+        const finishRequestColors = [
+            '#ff2e63',  // Redlight = แดง
+            '#0eb6e3',  // ฟ้า
+            '#00d9a3',  // เขียว
+            '#FFD700',  // เหลือง
+            '#FF6B9D',  // ชมพู
+            '#888'      // เทา
+        ];
+        
+        new Chart(document.getElementById('finishRequestChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(stats.finish_requests),
+                datasets: [{
+                    data: Object.values(stats.finish_requests),
+                    backgroundColor: finishRequestColors,
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                ...chartOptions,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#fff'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#fff',
+                            font: {
+                                size: 13
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Plot Word Cloud Data
+        const plotCloudData = [
+            { text: 'เราไม่ใช่ม้าแข่ง', count: 13 },
+            { text: 'In Other Words', count: 8 },
+            { text: 'กีฮุน', count: 11 },
+            { text: 'อินโฮ', count: 7 },
+            { text: 'Redlight Means Go', count: 6 },
+            { text: 'รู้กันแค่นี้', count: 4 },
+            { text: 'ดราม่า', count: 4 },
+            { text: 'สนุก', count: 3 },
+            { text: 'เบาสมอง', count: 3 },
+            { text: 'ตลก', count: 3 },
+            { text: 'ฮอต', count: 3 },
+            { text: 'กีฮอส', count: 3 },
+            { text: 'อินฮอส', count: 2 },
+            { text: 'ขี้วีน', count: 2 }
+        ];
+        
+        // Create Plot Word Cloud
+        const plotContainer = document.getElementById('plotcloud-container');
+        const plotColorPalette = [
+            '#ff2e63', '#0eb6e3', '#00d9a3', '#FFB74D', '#FFD700',
+            '#FF6B9D', '#C44569', '#FFA07A', '#4ECDC4', '#45B7D1',
+            '#96CEB4', '#DDA15E', '#BC6C25', '#FFDAB9', '#E91E63'
+        ];
+        
+        plotCloudData.forEach((word, index) => {
+            const size = Math.max(1.2, Math.min(3.5, word.count / 4));
+            const color = plotColorPalette[index % plotColorPalette.length];
+            const animationDelay = Math.random() * 2;
+            
+            const wordElement = document.createElement('div');
+            wordElement.className = 'word-item';
+            wordElement.style.fontSize = `${size}rem`;
+            wordElement.style.borderColor = color;
+            wordElement.style.animationDelay = `${animationDelay}s`;
+            
+            wordElement.innerHTML = `
+                <span class="word-text" style="color: ${color}">${word.text}</span>
+                <span class="word-count">(${word.count})</span>
+            `;
+            
+            wordElement.addEventListener('click', function(event) {
+                // Check word type and assign specific emoji
+                let emoji = '✨';
+                let sparkleCount = 5;
+                
+                if (word.text.includes('เราไม่ใช่ม้าแข่ง')) {
+                    emoji = '🐎';
+                    sparkleCount = 8;
+                } else if (word.text.includes('กีฮอส')) {
+                    emoji = '🦄';
+                    sparkleCount = 8;
+                } else if (word.text.includes('อินฮอส')) {
+                    emoji = '🐴';
+                    sparkleCount = 8;
+                } else if (word.text.includes('ม้า')) {
+                    emoji = '🐴';
+                    sparkleCount = 8;
+                }
+                
+                // Create sparkle/emoji effect
+                for(let i = 0; i < sparkleCount; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.textContent = emoji;
+                    sparkle.style.position = 'fixed';
+                    sparkle.style.left = event.clientX + 'px';
+                    sparkle.style.top = event.clientY + 'px';
+                    sparkle.style.fontSize = (emoji !== '✨') ? '2rem' : '1.5rem';
+                    sparkle.style.pointerEvents = 'none';
+                    sparkle.style.animation = `sparkleplot${i} 1s ease-out`;
+                    sparkle.style.zIndex = '9999';
+                    document.body.appendChild(sparkle);
+                    
+                    // Create animation keyframes
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        @keyframes sparkleplot${i} {
+                            to {
+                                transform: translate(${(Math.random() - 0.5) * 200}px, ${(Math.random() - 0.5) * 200}px) scale(0);
+                                opacity: 0;
+                            }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                    
+                    setTimeout(() => {
+                        sparkle.remove();
+                        style.remove();
+                    }, 1000);
+                }
+                
+                // Bounce animation
+                this.style.animation = 'bounce 0.5s';
+                setTimeout(() => {
+                    this.style.animation = `float 3s ease-in-out infinite ${animationDelay}s`;
+                }, 500);
+            });
+            
+            wordElement.addEventListener('mouseenter', function() {
+                this.style.background = `linear-gradient(135deg, ${color}22, ${color}11)`;
+            });
+            
+            wordElement.addEventListener('mouseleave', function() {
+                this.style.background = 'rgba(255, 255, 255, 0.05)';
+            });
+            
+            plotContainer.appendChild(wordElement);
+        });
+        
+        // Interactive Word Cloud
+        const wordCloudData = [
+            { text: 'ฟิคม้า', count: 20 },
+            { text: 'อ่าน', count: 19 },
+            { text: 'ชอบ', count: 18 },
+            { text: 'รอ', count: 16 },
+            { text: 'คุณแคท', count: 15 },
+            { text: 'แต่ง', count: 10 },
+            { text: 'เก่ง', count: 8 },
+            { text: 'ด้อม', count: 6 },
+            { text: 'ขอบคุณ', count: 5 },
+            { text: 'แปล', count: 4 },
+            { text: 'กำลังใจ', count: 4 },
+            { text: 'สนุก', count: 3 },
+            { text: 'อึ้ง', count: 3 },
+            { text: 'เขิน', count: 3 },
+            { text: 'ตลก', count: 3 },
+            { text: 'กีฮุน', count: 3 },
+            { text: 'ขี้วีน', count: 3 },
+            { text: 'กีฮอส', count: 2 },
+            { text: 'รู้กันแค่นี้', count: 2 },
+            { text: 'อยากให้จบ', count: 2 },
+            { text: 'ความสามารถ', count: 2 }
+        ];
+        
+        const container = document.getElementById('wordcloud-container');
+        const colorPalette = [
+            '#ff2e63', '#0eb6e3', '#00d9a3', '#FFB74D', '#FFD700',
+            '#FF6B9D', '#C44569', '#FFA07A', '#4ECDC4', '#45B7D1',
+            '#96CEB4', '#DDA15E', '#BC6C25', '#FFDAB9', '#E91E63'
+        ];
+        
+        // คำนวณขนาดตามจำนวน (ใหญ่ขึ้น)
+        wordCloudData.forEach((word, index) => {
+            const size = Math.max(1.2, Math.min(3.5, word.count / 6)); // ขนาดใหญ่ขึ้น
+            const color = colorPalette[index % colorPalette.length];
+            const animationDelay = Math.random() * 2; // random delay
+            
+            const wordElement = document.createElement('div');
+            wordElement.className = 'word-item';
+            wordElement.style.fontSize = `${size}rem`;
+            wordElement.style.borderColor = color;
+            wordElement.style.animationDelay = `${animationDelay}s`;
+            
+            wordElement.innerHTML = `
+                <span class="word-text" style="color: ${color}">${word.text}</span>
+                <span class="word-count">(${word.count})</span>
+            `;
+            
+            // Click effect
+            wordElement.addEventListener('click', function(event) {
+                // Check word type and assign specific emoji
+                let emoji = '✨';
+                let sparkleCount = 5;
+                
+                if (word.text.includes('เราไม่ใช่ม้าแข่ง')) {
+                    emoji = '🐎';
+                    sparkleCount = 8;
+                } else if (word.text.includes('กีฮอส')) {
+                    emoji = '🦄';
+                    sparkleCount = 8;
+                } else if (word.text.includes('อินฮอส')) {
+                    emoji = '🐴';
+                    sparkleCount = 8;
+                } else if (word.text.includes('ม้า')) {
+                    emoji = '🐴';
+                    sparkleCount = 8;
+                } else if (word.text.includes('คุณแคท') || word.text.includes('แคท')) {
+                    emoji = '🐱';
+                    sparkleCount = 8;
+                }
+                
+                // Create sparkle/emoji effect
+                for(let i = 0; i < sparkleCount; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.textContent = emoji;
+                    sparkle.style.position = 'fixed';
+                    sparkle.style.left = event.clientX + 'px';
+                    sparkle.style.top = event.clientY + 'px';
+                    sparkle.style.fontSize = (emoji !== '✨') ? '2rem' : '1.5rem';
+                    sparkle.style.pointerEvents = 'none';
+                    sparkle.style.animation = `sparkle${i} 1s ease-out`;
+                    sparkle.style.zIndex = '9999';
+                    document.body.appendChild(sparkle);
+                    
+                    // Create animation keyframes
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        @keyframes sparkle${i} {
+                            to {
+                                transform: translate(${(Math.random() - 0.5) * 200}px, ${(Math.random() - 0.5) * 200}px) scale(0);
+                                opacity: 0;
+                            }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                    
+                    setTimeout(() => {
+                        sparkle.remove();
+                        style.remove();
+                    }, 1000);
+                }
+                
+                // Bounce animation
+                this.style.animation = 'bounce 0.5s';
+                setTimeout(() => {
+                    this.style.animation = `float 3s ease-in-out infinite ${animationDelay}s`;
+                }, 500);
+            });
+            
+            // Hover effect - เปลี่ยนสีพื้นหลัง
+            wordElement.addEventListener('mouseenter', function() {
+                this.style.background = `linear-gradient(135deg, ${color}22, ${color}11)`;
+            });
+            
+            wordElement.addEventListener('mouseleave', function() {
+                this.style.background = 'rgba(255, 255, 255, 0.05)';
+            });
+            
+            container.appendChild(wordElement);
+        });
+        
+        // Character Details Data
+        const characterDetails = {
+            gihun: {
+                name: '🦄 กีฮุน',
+                color: '#00d9a3',
+                fullDesc: `
+                    <h2 style="color: #00d9a3; text-align: center; margin-bottom: 30px;">🦄 กีฮุน - คนสวยขา</h2>
+                    <div style="color: #fff; line-height: 2; font-size: 1.1rem;">
+                        <p><strong style="color: #00d9a3;">✨ บุคลิกภาพ:</strong></p>
+                        <p>คนสวยขา ขี้วีน ใจอ่อน รักสัตว์ รักม้า มีหัวใจอ่อนโยนและเห็นอกเห็นใจผู้อื่น ชอบดูแลคนรอบข้างและสัตว์เลี้ยง</p>
+                        
+                        <p style="margin-top: 20px;"><strong style="color: #00d9a3;">💭 ลักษณะเด่น:</strong></p>
+                        <ul style="margin-left: 30px;">
+                            <li>มีความเห็นอกเห็นใจสูง ใจดี</li>
+                            <li>ขี้กังวลกับคนรอบข้าง</li>
+                            <li>ชอบอยู่กับธรรมชาติและสัตว์</li>
+                            <li>มักจะช่วยเหลือคนอื่นโดยไม่คิดอะไร</li>
+                        </ul>
+                        
+                        <p style="margin-top: 20px;"><strong style="color: #00d9a3;">🎯 สไตล์การใช้ชีวิต:</strong></p>
+                        <p>ชอบความเรียบง่าย สงบ และมีเวลาอยู่กับตัวเอง ชอบดูแลสวนหรือเลี้ยงสัตว์ มักจะเป็นคนที่ให้กำลังใจคนอื่น</p>
+                        
+                        <p style="margin-top: 20px;"><strong style="color: #00d9a3;">💖 ความสัมพันธ์:</strong></p>
+                        <p>เป็นคนที่ใส่ใจและดูแลคนที่รักอย่างดี ชอบให้ความอบอุ่นและรับฟังปัญหา เป็นแฟนที่อบอุ่นและเชื่อถือได้</p>
+                    </div>
+                `
+            },
+            inho_soft: {
+                name: '🐶 อินโฮ หมาเด็ก',
+                color: '#0eb6e3',
+                fullDesc: `
+                    <h2 style="color: #0eb6e3; text-align: center; margin-bottom: 30px;">🐶 อินโฮ หมาเด็ก - ขี้อ้อน</h2>
+                    <div style="color: #fff; line-height: 2; font-size: 1.1rem;">
+                        <p><strong style="color: #0eb6e3;">✨ บุคลิกภาพ:</strong></p>
+                        <p>ขี้อ้อน พูดว่า "คุณกีฮุนครับๆๆๆ" ตลอด ชอบติดคนที่ชอบและขอความสนใจ เหมือนหมาเด็กที่อยากให้ลูบหัว</p>
+                        
+                        <p style="margin-top: 20px;"><strong style="color: #0eb6e3;">💭 ลักษณะเด่น:</strong></p>
+                        <ul style="margin-left: 30px;">
+                            <li>ขี้อ้อนมาก ชอบแสดงความรัก</li>
+                            <li>อยากได้ความสนใจจากคนที่ชอบ</li>
+                            <li>พูดจาน่ารัก อ่อนหวาน</li>
+                            <li>ชอบทำกิจกรรมกับคนที่รัก เช่น "ผมอยากขี่ม้า พาผมไปหน่อย"</li>
+                        </ul>
+                        
+                        <p style="margin-top: 20px;"><strong style="color: #0eb6e3;">🎯 สไตล์การใช้ชีวิต:</strong></p>
+                        <p>ชอบทำกิจกรรมกับคนสนิท ไม่ชอบอยู่คนเดียว ชอบขอความช่วยเหลือและติดตามคนที่ชอบ เป็นคนที่อยากมีคนดูแล</p>
+                        
+                        <p style="margin-top: 20px;"><strong style="color: #0eb6e3;">💖 ความสัมพันธ์:</strong></p>
+                        <p>เป็นแฟนที่ขี้อ้อน ชอบกอดจูบ และแสดงความรัก พูดหวานๆ และต้องการความรักจากแฟนตลอดเวลา</p>
+                    </div>
+                `
+            },
+            inho_control: {
+                name: '🐯 อินโฮ พี่เสือ',
+                color: '#ff2e63',
+                fullDesc: `
+                    <h2 style="color: #ff2e63; text-align: center; margin-bottom: 30px;">🐯 อินโฮ พี่เสือ - ขี้เก็ก</h2>
+                    <div style="color: #fff; line-height: 2; font-size: 1.1rem;">
+                        <p><strong style="color: #ff2e63;">✨ บุคลิกภาพ:</strong></p>
+                        <p>ขี้เก็ก จีบไม่ดูเวลา มั่นใจในตัวเองสูง ชอบเล่นจิตวิทยาและล้อเล่น ระวังพี่เสือหลอกไปเล่นกันในคอกม้า</p>
+                        
+                        <p style="margin-top: 20px;"><strong style="color: #ff2e63;">💭 ลักษณะเด่น:</strong></p>
+                        <ul style="margin-left: 30px;">
+                            <li>มั่นใจ กล้าแสดงออก</li>
+                            <li>ชอบล้อ และเล่นกับคนที่ชอบ</li>
+                            <li>จีบไม่ดูเวลา สถานที่</li>
+                            <li>ชอบความตื่นเต้นและท้าทาย</li>
+                        </ul>
+                        
+                        <p style="margin-top: 20px;"><strong style="color: #ff2e63;">🎯 สไตล์การใช้ชีวิต:</strong></p>
+                        <p>ชอบผจญภัย ทำสิ่งใหม่ๆ ไม่กลัวความเสี่ยง ชอบเป็นจุดสนใจและดึงดูดความสนใจ มักจะมีความคิดสร้างสรรค์</p>
+                        
+                        <p style="margin-top: 20px;"><strong style="color: #ff2e63;">💖 ความสัมพันธ์:</strong></p>
+                        <p>เป็นแฟนที่ร้อนแรง ชอบล้อเล่นและสร้างความตื่นเต้น อาจจะดูเจ้าชู้แต่จริงจังกับคนที่รัก ชอบสร้างเซอร์ไพรส์</p>
+                    </div>
+                `
+            }
+        };
+        
+        // Function to show character details in modal
+        function showCharacterDetails(character) {
+            const modal = document.getElementById('characterModal');
+            const content = document.getElementById('modalCharacterContent');
+            const data = characterDetails[character];
+            
+            content.innerHTML = data.fullDesc;
+            modal.style.display = 'block';
+            
+            // Close on outside click
+            modal.onclick = function(event) {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('characterModal').style.display = 'none';
+        }
+        
+        // ESC key to close modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+                closeFicModal();
+            }
+        });
+        
+        // Fic Plot Data
+        function getHorseResults() {
+            return {
+                // 🐎 PLOT A — วัยเรียน
+                "A1": `🎓 วัยเรียน + โรแมนติกอบอุ่น<br><br>
+                       🎓 <strong>ฟิควัยเรียนอบอุ่น</strong><br><br>
+                       กีฮุนและอินโฮเป็นนักศึกษามหาวิทยาลัย<br>
+                       อินโฮกับกีฮุนลงวิชาเลือกเดียวกันแบบไม่ได้นัดหมาย 
+                       นึกว่าเรียนเศรษฐศาสตร์ กลายเป็น <strong>"พื้นฐานการขี่ม้า 101"</strong>
+                       <br><br>
+                       กีฮุนปากแจ๋ว แต่ดันกลัวม้า<br>
+                       อินโฮนิ่ง ๆ ทำเก็กขี่ได้ แต่ก็ไม่บอกว่าเคยเป็นนักขี่ม้าเยาวชน 🐴`,
+                
+                "A2": `🎓 วัยเรียน + ดราม่าหนัก<br><br>
+                       🎓 <strong>ฟิควัยเรียนดราม่าเข้มในคอกม้า</strong><br><br>
+                       กีฮุนเด็กใหม่หนีอดีตจากโซล<br>
+                       แต่ดันถูกม้าคลั่งพุ่งใส่กลางสนาม — อินโฮ รุ่นพี่ปี 4 พุ่งเข้ามาช่วย<br><br>
+                       เขาคือรองประธานชมรมขี่ม้า ผู้ไม่เคยเหลียวแลใคร<br>
+                       แต่กลับถามกีฮุนหลังเหตุการณ์นั้นว่า<br>
+                       <em>"ยังกลัวม้าอยู่ไหม…หรือแค่กลัวผม?"🐴🖤</em>`,
+                
+                "A3": `🎓 วัยเรียน + คอมเมดี้<br><br>
+                       🎓 <strong>ฟิควัยเรียนสายลงวิชาผิด</strong><br><br>
+                       กีฮุน เด็กบริหารปี 1 มั่นใจเต็มร้อยว่าตัวเองกดลง "การบริหารเชิงกลยุทธ์"<br>
+                       แต่พอเปิดเทอม กลับมาโผล่ในวิชา <strong>"การขี่ม้าและดูแลสุขภาพม้าเบื้องต้น"</strong> แบบงง ๆ<br><br>
+                       เจออินโฮ—นักศึกษาสัตวศาสตร์หน้าตานิ่ง ๆ ผู้จริงจังกับชีวิต<br>
+                       รวมไปถึงขี้เก็กทั้งคนและม้า<br><br>
+                       อินโฮ: <em>"ถ้าคุณไม่ตั้งใจเรียน ผมแนะนำให้ถอนครับ"</em><br>
+                       กีฮุน: <em>"พี่ ผมกดผิด! แล้วนี่มันวิชาอะไร!? ทำไมผมต้องแปรงขนให้ม้า!?" 🐴💥</em>`,
+                
+                "A4": `🎓 วัยเรียน + ชีวิตเรียล<br><br>
+                       🎓 <strong>ฟิคมหาลัยเรียล ๆ แต่มีม้าเฉย</strong><br><br>
+                       กีฮุน ปี 2 บริหาร แบกเกรดจนหลังแทบหัก<br>
+                       อินโฮ ปี 4 วิศวะ เพิ่งลาออกจากตำแหน่งประธานชมรมเพราะ burn out หนัก<br><br>
+                       ทั้งสองคนไม่รู้จักกัน แต่ดันมากดลง "วิชาขี่ม้าเบื้องต้น" เพราะคิดว่าเก็บ A ง่าย<br><br>
+                       จนมาเจอกันตอนต้องช่วยกันตักขี้ม้า กลางแดด 35 องศา<br><br>
+                       กีฮุน: <em>"นี่มันไม่ใช่วิชาเลือกแล้วครับพี่ นี่มันค่ายลูกเสือ" 🐴🔥</em>`,
+                
+                // 🐎 PLOT B — ออฟฟิศ/ชีวิตเรียล
+                "B1": `🧑\u200d💼 ออฟฟิศ + โรแมนติกอบอุ่น<br><br>
+                       🎯 <strong>ฟิคออฟฟิศอุ่น ๆ แต่มีลางแปลก ๆ...</strong><br><br>
+                       กีฮุน: พนักงานออฟฟิศธรรมดาที่ชอบเลิกงานตรงเวลา<br>
+                       อินโฮ: หัวหน้าขรึม ๆ ที่ใครก็ไม่กล้าทักไลน์นอกเวลางาน<br><br>
+                       ทั้งสองดูไม่มีอะไรเกี่ยวข้องกันเลย...<br>
+                       จนวันหนึ่งเจอกันที่สนามแข่งม้าหลังเลิกงาน<br><br>
+                       <em>"พี่...ก็มาเหรอครับ?"</em><br>
+                       <em>"คุณก็มาประจำไม่ใช่เหรอ"</em><br><br>
+                       🐴 เริ่มจากออฟฟิศจืด ๆ แล้วจู่ ๆ ก็ไปสนามแทงม้าเฉย`,
+                
+                "B2": `🧑\u200d💼 ออฟฟิศ + ดราม่าหนัก<br><br>
+                       🎯 <strong>ฟิคออฟฟิศดราม่าหนัก...กับอดีตวันไนท์ที่ไม่จบแค่นั้น</strong><br><br>
+                       กีฮุน: ครีเอทีฟแบรนด์ไฟแรง ที่แค่จะลืมเรื่องคืนนั้น<br>
+                       อินโฮ: ผู้บริหารฝั่งเอเจนซี่ ที่ทำเหมือนไม่เคยรู้จักกันมาก่อน<br><br>
+                       ทั้งสองไม่ควรวนกลับมาเจอกันอีก<br>
+                       แต่ทริป team building ที่เชจูกลับพาทั้งคู่มาขี่ม้าคู่กันแบบงง ๆ<br><br>
+                       ตอนควบม้าขึ้นเขา อินโฮหันมาพูดเบา ๆ ว่า<br>
+                       <em>"ขี่ให้ดีนะครับ"</em><br>
+                       <em>"พี่หมายถึงม้าใช่มั้ย"</em><br>
+                       <em>"แล้วแต่คุณจะนึกถึงอะไรคืนนั้น"</em><br><br>
+                       🐴 ไม่มีใครพูดถึงคืนนั้น...แต่ม้าในสนามเหมือนจะรู้ทัน`,
+                
+                "B3": `🧑\u200d💼 ออฟฟิศ + คอมเมดี้<br><br>
+                       🎯 <strong>ฟิคออฟฟิศสายปั่น</strong><br><br>
+                       กีฮุนถูกชวนไปสัมมนาออฟฟิศ คิดว่าจะได้อัปสกิลการตลาด<br>
+                       แต่พอไปถึง กลับมีม้าเดินอยู่หน้าเวที และหัวข้อบนจอคือ<br>
+                       <strong>"ขี่ม้าเปลี่ยนชีวิต ด้วยระบบ Passive Income"</strong><br><br>
+                       อินโฮ — วิทยากรเจ้าของธุรกิจหน้าโคตรนิ่ง เดินขึ้นเวทีพร้อมไมค์ แล้วพูดว่า<br>
+                       <em>"ลองดูสักครั้งครับ เดี๋ยวคุณจะติดใจ"</em><br><br>
+                       กีฮุนลุกพรวดทันทีตะโกนกลางห้องว่า<br>
+                       <em>"คุณหลอกผมมาแบบนี้ได้ยังไง!! ผมจะแจ้ง ๆ ๆ ๆ!!" 🐴💢</em><br><br>
+                       🐴 ฟิคนี้ไม่รู้จะได้งานใหม่หรือได้คดีติดตัว`,
+                
+                "B4": `🧑\u200d💼 ออฟฟิศ + ชีวิตเรียล<br><br>
+                       🎯 <strong>ฟิคออฟฟิศสายหมดไฟ</strong><br><br>
+                       หมดแพชชัน เบื่องาน เบื่อตัวเอง<br>
+                       เลยกดสมัครคอร์ส "พัฒนาตัวเองสำหรับคนทำงานยุคใหม่" แบบไม่คิดอะไร<br><br>
+                       ตัดภาพไปอีกที — กลายเป็นคอร์สขี่ม้า ยืนอยู่กลางทุ่ง หัดใส่อานม้าอยู่กับผู้ชายแปลกหน้า<br>
+                       ที่บอกว่า "จับบังเหียนให้มั่น แล้วปล่อยให้ม้ามันพาไป"<br><br>
+                       🐴 ขี้เกียจพอทน ขี้ม้าพอเลย 🐴💢`,
+                
+                // 🐎 PLOT E — ต่างประเทศ
+                "E1": `✈️ ต่างประเทศ + โรแมนติก<br><br>
+                       ✈️ <strong>ฟิคต่างแดนอบอุ่น (ม้าไม่ควรมี แต่ก็มีได้ไง)</strong><br><br>
+                       กีฮุนสมัครแพ็กเกจทัวร์ "พักผ่อนธรรมชาติในยุโรป" แบบไม่อ่านรายละเอียด<br>
+                       ตัดภาพไป — วันรุ่งขึ้นยืนอยู่กลางฟาร์ม กับม้าตัวหนึ่ง<br><br>
+                       อินโฮเป็นไกด์ท้องถิ่นที่มารับตรงเวลา<br>
+                       <em>"ขึ้นม้าสิครับ เดี๋ยวผมจูงให้"</em><br><br>
+                       ยังไม่พร้อมแต่ม้าก็เริ่มเดิน อินโฮเดินตามข้าง ๆ เงียบ ๆ<br>
+                       บางจังหวะกีฮุนหันไปเจออีกฝ่าย ก็รู้ว่ากำลังประหม่าและเขิน<br><br>
+                       🐴 ไม่ได้ตั้งใจมาขี่ม้า แต่ดันมาตกหลุมรักคนจูงม้าแทน`,
+                
+                "E2": `✈️ ต่างประเทศ + ดราม่า<br><br>
+                       ✈️ <strong>ฟิคต่างแดนดราม่าแบบไม่ตั้งใจ</strong><br><br>
+                       กีฮุนหนีทุกอย่างมาเที่ยวคนเดียว หวังแค่เปลี่ยนที่หายใจ<br>
+                       แต่ดันเจอผู้ชายแปลกหน้าในทริปเดียวกัน<br><br>
+                       "พรุ่งนี้ว่างไหม" เขาถามตอนรอรถบัส<br>
+                       "...ทำไมเหรอครับ"<br>
+                       "จะชวนไปขี่ม้า"<br><br>
+                       ดูเหมือนชวนเล่น ๆ แต่สายตาเขาไม่ได้ล้อเล่น<br><br>
+                       🐴 ไม่ได้ตั้งใจมา แต่ม้าก็ยังต้องขี่อีกเหรอ`,
+                
+                "E3": `✈️ ต่างประเทศ + คอมเมดี้<br><br>
+                       ✈️ <strong>ฟิคต่างแดนสายพังแบบไม่ได้ตั้งใจ</strong><br><br>
+                       แพลนไว้จะเที่ยวธรรมชาติชิล ๆ คนเดียว<br>
+                       เดินผ่านป้ายภาษาท้องถิ่น เห็นรูปคนเดินเล่นอยู่กลางทุ่งหญ้า เลยกดจองไปแบบไม่คิด<br><br>
+                       ตัดภาพมา — ยืนอยู่กลางคอกม้า มีกลิ่นฟาง ยืนอยู่ข้างม้าตัวเท่ารถเก๋ง<br><br>
+                       อินโฮเป็นครูฝึกที่พูดอังกฤษได้น้อย แต่บอกชัดว่า<br>
+                       <em>"No refund, only ride the horse"</em><br><br>
+                       🐴 ไม่ได้อยากขี่ม้า แค่อยากหนีความจริง…แต่ดันหนีม้าไม่พ้น บ้าเอ้ย`,
+                
+                "E4": `✈️ ต่างประเทศ + เรียล<br><br>
+                       ✈️ <strong>ฟิคต่างแดนเรียล ๆ แบบไม่ได้ตั้งใจจะเจอใคร</strong><br><br>
+                       กีฮุนมาเที่ยวประเทศที่ไม่คุ้น ลืมลงทะเบียนกิจกรรม<br>
+                       เปิดตารางเช้า ๆ เหลือแค่ "ขี่ม้าชมธรรมชาติ" ช่องเดียวที่ไม่เต็ม<br><br>
+                       ...แล้วเจอคนที่ลืมลงทะเบียนเหมือนกัน<br><br>
+                       🐴 ลืมลงทะเบียน...แต่อย่าลืมว่ายังมีกิจกรรมขี่ม้านะจ๊ะ`,
+                
+                // 🐎 PLOT S — Squid Game
+                "S1": `🦑 Squid Game + โรแมนติก<br><br>
+                       🦑 <strong>ฟิคเกมม้าโหด (แต่หัวใจอบอุ่น)</strong><br><br>
+                       ด่าน: Happy คนเลี้ยงม้า — ผู้เล่นต้องจับคู่กับอีกคน และร่วมกันฝึกม้าหนึ่งตัวให้เชื่องใน 72 ชม.<br><br>
+                       กีฮุนจับคู่ได้กับอินโฮ(ยองอิล)<br>
+                       ตอนคืนแรกม้าหนีไปกลางดึก ทั้งสองคนต้องตามไปจนตัวเปื้อนโคลน<br>
+                       อินโฮถอดเสื้อคลุมตัวเองมาคลุมให้ แล้วบอกแผ่ว ๆ<br>
+                       <em>"ถ้าเรารอด...ผมอยากชวนคุณไปขี่ม้าด้วยกัน"</em><br><br>
+                       🐴 ม้าอาจเชื่องยาก แต่คนเชื่องง่ายกว่าที่คิด`,
+                
+                "S2": `🦑 Squid Game + ดราม่า<br><br>
+                       🦑 <strong>ฟิคเกมม้าโหด (จริง ๆ)</strong><br><br>
+                       ด่าน: Happy คนเลี้ยงม้า — ม้าหนึ่งตัว ต่อคนหนึ่งคน ใครไม่มีม้าอยู่ด้วย = out<br><br>
+                       เหลือม้าตัวสุดท้าย อินโฮ (ยองอิล) กับกีฮุนเดินมาหยุดตรงหน้าในเวลาเดียวกัน<br>
+                       กีฮุนลังเล อินโฮกลับดันไหล่เขาเบา ๆ<br>
+                       <em>"เอาน้องไปเถอะ...คุณยังไม่ควรออกตอนนี้"</em><br>
+                       แล้วเดินถอยออกไปอย่างเงียบ ๆ โดยไม่มองกลับมา<br><br>
+                       🐴 ไม่มีเสียงปืน แต่มีม้า`,
+                
+                "S3": `🦑 Squid Game + ปั่น<br><br>
+                       🦑 <strong>ฟิคเกมม้าสายพัง</strong><br><br>
+                       ด่าน: Happy คนเลี้ยงม้า — ผู้เล่นต้องฝึกม้าให้เชื่องภายใน 3 วัน ใครโดนม้าเตะคือ out<br><br>
+                       อินโฮ (ยองอิล) จับบังเหียนมือเดียว ท่าทางเหมือนเคยควบม้าข้ามเขามาแล้วสามรอบ<br><br>
+                       <em>"คุณครับ...มันจ้องผมแรงมาก"</em><br>
+                       <em>"มันเห็นคุณเป็นเหยื่อ"</em><br><br>
+                       🐴 ฟิคนี้ไม่ได้กลัวตาย แต่กลัวม้ากัดมากกว่า`,
+                
+                "S4": `🦑 Squid Game + เรียล<br><br>
+                       🦑 <strong>ฟิคเกมม้าเรียล ๆ</strong><br><br>
+                       ด่าน: Happy คนเลี้ยงม้า — ต้องดูแลม้าให้ไม่พยศ จนจบด่าน<br><br>
+                       ไม่มีใครบอกว่าม้ามีอารมณ์ยังไง<br>
+                       กีฮุนทำทุกอย่างตามคู่มือ แต่พอเวลาจริง ม้ากลับไม่ขยับเลย<br>
+                       กรรมการเริ่มนับถอยหลัง<br>
+                       อินโฮ (ยองอิล) อยู่คอกข้าง ๆ ตะโกนมา<br>
+                       <em>"อย่าคิดว่าคุมมันสิ...คิดแค่ว่ารอดไปด้วยกัน"</em><br><br>
+                       🐴 การทำให้ใครสักตัวไว้ใจคุณ ในโลกที่ไม่มีใครไว้ใจใครแล้ว`
+            };
+        }
+        
+        function showFicModal(ficCode) {
+            const results = getHorseResults();
+            const ficContent = results[ficCode] || 'ไม่พบเนื้อหา';
+            
+            document.getElementById('ficModalContent').innerHTML = `
+                <div style="color: #fff; line-height: 2; font-size: 1.1rem;">
+                    ${ficContent}
+                </div>
+            `;
+            document.getElementById('ficModal').style.display = 'block';
+        }
+        
+        function closeFicModal() {
+            document.getElementById('ficModal').style.display = 'none';
+        }
+        
+        // Close fic modal on outside click
+        document.getElementById('ficModal').onclick = function(event) {
+            if (event.target === this) {
+                closeFicModal();
+            }
+        };
+    </script>
+</body>
+</html>
