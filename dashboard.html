@@ -296,7 +296,11 @@
         
         @media (max-width: 768px) {
             h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
+            }
+            
+            .stats-overview {
+                grid-template-columns: 1fr;
             }
             
             .chart-grid {
@@ -304,7 +308,33 @@
             }
             
             .chart-container {
-                height: 350px;
+                height: 300px;
+            }
+            
+            #voteLeaderboard {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .leaderboard-section {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            #wordcloud-container, #plotcloud-container {
+                min-height: 400px;
+                padding: 15px;
+            }
+            
+            .word-item {
+                font-size: 0.9rem !important;
+                padding: 8px 15px;
             }
         }
         
@@ -407,7 +437,7 @@
             <p style="text-align: center; color: #888; margin-bottom: 20px;">
                 💡 กดคลิกเพื่ออ่านพล็อตฟิคกาวทั้ง 16 แบบ
             </p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;" class="leaderboard-section">
                 <div id="voteLeaderboard" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                     <!-- Leaderboard items will be inserted here -->
                 </div>
